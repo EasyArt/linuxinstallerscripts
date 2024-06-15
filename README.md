@@ -1,2 +1,2 @@
 # linuxinstallerscripts
-Shell scripts for automatic installation of Software
+wireguard-server-gui.sh Installs wireguard as Server with WG-Dashboard WebUI
