@@ -6,50 +6,50 @@
 #| |____| | | | | |_| |>  <  / ____ \| |__| | |__| | (_) | | | | |
 #|______|_|_| |_|\__,_/_/\_\/_/    \_\_____/ \____/ \___/|_|_| |_|
                                                                  
-# Prüfen, ob das Skript als root ausgeführt wird
+# Check if the script is run as root
 if [ "$EUID" -ne 0 ]; then
-  echo "Dieses Skript muss als root ausgeführt werden." >&2
+  echo "This script must be run as root." >&2
   exit 1
 fi
 
-# Whiptail für Eingaben
-DOMAIN=$(whiptail --inputbox "Bitte die Domäne eingeben" 8 78 --title "Domäne" 3>&1 1>&2 2>&3)
-DOMAIN_ADMIN_GROUP=$(whiptail --inputbox "Bitte die Admin-Gruppe der Domäne eingeben" 8 78 --title "Domänen-Admin-Gruppe" 3>&1 1>&2 2>&3)
-DOMAIN_JOIN_USER=$(whiptail --inputbox "Bitte den Benutzer für den Domain-Beitritt eingeben" 8 78 --title "Domain-Beitrittsbenutzer" 3>&1 1>&2 2>&3)
-DOMAIN_JOIN_PASSWORD=$(whiptail --passwordbox "Bitte das Passwort für den Domain-Beitrittsbenutzer eingeben" 8 78 --title "Domain-Beitrittspasswort" 3>&1 1>&2 2>&3)
-REALM="${DOMAIN^^}"  # Konvertiere die Domäne in Großbuchstaben für den Realm
-AD_ACCESS_FILTER=$(whiptail --inputbox "Bitte den AD Access Filter eingeben\nBeispiel: (memberOf=CN=Domänen-Administratoren,OU=Admin,OU=UserGroups,DC=domain,DC=local)" 12 78 "(memberOf=CN=Domänen-Administratoren,OU=Admin,OU=UserGroups,DC=domain,DC=local)" --title "AD Access Filter" 3>&1 1>&2 2>&3)
+# Whiptail for inputs
+DOMAIN=$(whiptail --inputbox "Please enter the domain" 8 78 --title "Domain" 3>&1 1>&2 2>&3)
+DOMAIN_ADMIN_GROUP=$(whiptail --inputbox "Please enter the domain admin group" 8 78 --title "Domain Admin Group" 3>&1 1>&2 2>&3)
+DOMAIN_JOIN_USER=$(whiptail --inputbox "Please enter the domain join user" 8 78 --title "Domain Join User" 3>&1 1>&2 2>&3)
+DOMAIN_JOIN_PASSWORD=$(whiptail --passwordbox "Please enter the password for the domain join user" 8 78 --title "Domain Join Password" 3>&1 1>&2 2>&3)
+REALM="${DOMAIN^^}"  # Convert domain to uppercase for the realm
+AD_ACCESS_FILTER=$(whiptail --inputbox "Please enter the AD access filter\nExample: (memberOf=CN=Domain Admins,OU=Admin,OU=UserGroups,DC=domain,DC=local)" 12 78 "(memberOf=CN=Domain Admins,OU=Admin,OU=UserGroups,DC=domain,DC=local)" --title "AD Access Filter" 3>&1 1>&2 2>&3)
 
-# Paketlisten aktualisieren und notwendige Pakete installieren
+# Update package lists and install necessary packages
 apt update
 apt install -y realmd sssd adcli krb5-user packagekit samba-common-bin oddjob oddjob-mkhomedir sudo
 export PATH=$PATH:/usr/sbin
 
-# Überprüfe, ob der Befehl 'realm' verfügbar ist
+# Check if 'realm' command is available
 if ! command -v realm &> /dev/null; then
-  echo "'realm' Kommando nicht gefunden. Stelle sicher, dass das Paket 'realmd' installiert ist." >&2
+  echo "'realm' command not found. Make sure the 'realmd' package is installed." >&2
   exit 1
 fi
 
-# System in die Domäne aufnehmen
-echo "System wird in die Domäne aufgenommen..."
+# Join the system to the domain
+echo "Joining the system to the domain..."
 echo "$DOMAIN_JOIN_PASSWORD" | realm join --user=$DOMAIN_JOIN_USER $DOMAIN
 
 if [ $? -ne 0 ]; then
-  echo "Fehler beim Beitritt zur Domäne" >&2
+  echo "Failed to join the domain" >&2
   exit 1
 fi
 
-# Hinzufügen der Domänengruppe zu den Sudoers
-echo "Hinzufügen der Gruppe $DOMAIN_ADMIN_GROUP zu den Sudoers..."
+# Add domain group to sudoers
+echo "Adding the group $DOMAIN_ADMIN_GROUP to sudoers..."
 echo "%$DOMAIN_ADMIN_GROUP ALL=(ALL) ALL" | sudo EDITOR='tee -a' visudo
 
-# SSH-Dienst neu starten
-echo "Neustart des SSH-Dienstes..."
+# Restart SSH service
+echo "Restarting the SSH service..."
 systemctl restart sshd
 
-# Konfiguration von SSSD anpassen
-echo "Anpassen der SSSD-Konfiguration..."
+# Adjust SSSD configuration
+echo "Adjusting SSSD configuration..."
 cat << EOF > /etc/sssd/sssd.conf
 [sssd]
 services = nss, pam
@@ -68,17 +68,17 @@ access_provider = ad
 ad_access_filter = $AD_ACCESS_FILTER
 EOF
 
-# Berechtigungen für sssd.conf setzen
+# Set permissions for sssd.conf
 chmod 600 /etc/sssd/sssd.conf
 
-# Neustart von SSSD
-echo "Neustart des SSSD-Dienstes..."
+# Restart SSSD
+echo "Restarting the SSSD service..."
 systemctl restart sssd
 
-# Konsole leeren
+# Clear console
 clear
 
-# Anzeige eines Whiptail-Fensters zur Erfolgsmeldung
-whiptail --title "Installation abgeschlossen" --msgbox "Die Installation und Konfiguration wurden erfolgreich abgeschlossen." 8 78
+# Display success message using Whiptail
+whiptail --title "Installation Complete" --msgbox "The installation and configuration were successfully completed." 8 78
 
-echo "Der Server wurde erfolgreich in die Domäne eingebunden und die Konfiguration abgeschlossen."
+echo "The server has been successfully joined to the domain and the configuration is complete."
