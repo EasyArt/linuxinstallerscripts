@@ -9,14 +9,14 @@
 #            |_|                                           |___/           
 #	11.09.2024
 
-# Variablen zur Speicherung der generierten Passwörter
+# Variables to store generated passwords
 mysql_root_password=""
 vaultwarden_admin_token=""
 
-# Funktionen zur Installation der verschiedenen Optionen
+# Functions for installing different options
 
 install_docker() {
-    echo "Docker wird installiert..."
+    echo "Installing Docker..."
     apt-get update
     apt-get install -y \
         ca-certificates \
@@ -24,13 +24,13 @@ install_docker() {
         gnupg \
         lsb-release
 
-    # Debian und Ubuntu haben ähnliche Setups
+    # Debian and Ubuntu have similar setups
     if [ -f /etc/debian_version ]; then
         DISTRO="debian"
     elif [ -f /etc/lsb-release ]; then
         DISTRO="ubuntu"
     else
-        echo "Dieses Skript unterstützt nur Debian und Ubuntu."
+        echo "This script only supports Debian and Ubuntu."
         exit 1
     fi
 
@@ -42,15 +42,13 @@ install_docker() {
     apt-get update
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-    echo "Erstelle 'produktives' Docker-Netzwerk..."
+    echo "Creating 'productive' Docker network..."
     docker network create produktiv
 	clear
 }
 
-
-
 install_portainer() {
-    echo "Portainer wird installiert..."
+    echo "Installing Portainer..."
     docker run -d --name portainer --network produktiv --restart always \
       -p 9443:9443 -h portainer \
       -v /var/run/docker.sock:/var/run/docker.sock \
@@ -60,7 +58,7 @@ install_portainer() {
 }
 
 install_nginx_rpm() {
-    echo "NGINX Proxy Manager wird installiert..."
+    echo "Installing NGINX Proxy Manager..."
     docker volume create npm_data
     docker volume create npm_ssl
 
@@ -73,7 +71,7 @@ install_nginx_rpm() {
 }
 
 install_mysql() {
-    echo "MySQL wird installiert..."
+    echo "Installing MySQL..."
     mysql_root_password=$(openssl rand -base64 12)
 
     docker run -d --name mysql --network produktiv --restart always \
@@ -84,7 +82,7 @@ install_mysql() {
 }
 
 install_guacamole() {
-    echo "Apache Guacamole wird installiert..."
+    echo "Installing Apache Guacamole..."
     docker volume create guacamole
 
     docker run -d --name guacamole --network produktiv --restart always \
@@ -108,9 +106,9 @@ install_vaultwarden() {
 }
 
 install_watchtower() {
-    echo "Watchtower wird installiert..."
-    timezone=$(whiptail --inputbox "Geben Sie Ihre Zeitzone an (z.B. Europe/Berlin):" 8 39 --title "Watchtower Installation" 3>&1 1>&2 2>&3)
-    hour=$(whiptail --inputbox "Geben Sie die Stunde an, zu der Watchtower laufen soll (0-23):" 8 39 --title "Watchtower Installation" 3>&1 1>&2 2>&3)
+    echo "Installing Watchtower..."
+    timezone=$(whiptail --inputbox "Enter your timezone (e.g. Europe/Berlin):" 8 39 --title "Watchtower Installation" 3>&1 1>&2 2>&3)
+    hour=$(whiptail --inputbox "Enter the hour for Watchtower to run (0-23):" 8 39 --title "Watchtower Installation" 3>&1 1>&2 2>&3)
     cron_time="0 $hour * * *"
 
     docker run -d --name watchtower --network produktiv --restart always \
@@ -120,15 +118,15 @@ install_watchtower() {
 	clear
 }
 
-# Funktion zur GUI für Mehrfachauswahl
+# Function for GUI multi-selection
 show_service_selection() {
-    services=$(whiptail --checklist "Wählen Sie die zu installierenden Dienste:" 20 78 10 \
-    "1" "Portainer installieren" off \
-    "2" "NGINX Proxy Manager installieren" off \
-    "3" "MySQL installieren" off \
-    "4" "Apache Guacamole installieren" off \
-    "5" "Vaultwarden installieren" off \
-    "6" "Watchtower installieren" off 3>&1 1>&2 2>&3)
+    services=$(whiptail --checklist "Select the services to install:" 20 78 10 \
+    "1" "Install Portainer" off \
+    "2" "Install NGINX Proxy Manager" off \
+    "3" "Install MySQL" off \
+    "4" "Install Apache Guacamole" off \
+    "5" "Install Vaultwarden" off \
+    "6" "Install Watchtower" off 3>&1 1>&2 2>&3)
 
     for service in $services; do
         case $service in
@@ -141,16 +139,16 @@ show_service_selection() {
         esac
     done
 
-    # Nach allen Installationen die Passwörter anzeigen
+    # After all installations, display the credentials
     display_credentials
 }
 
-# Funktion zur Anzeige der gesammelten Passwörter
+# Function to display collected passwords
 display_credentials() {
     credentials=""
 
     if [[ -n "$mysql_root_password" ]]; then
-        credentials+="MySQL Root Passwort: $mysql_root_password\n"
+        credentials+="MySQL Root Password: $mysql_root_password\n"
     fi
 
     if [[ -n "$vaultwarden_admin_token" ]]; then
@@ -158,18 +156,18 @@ display_credentials() {
     fi
 
     if [[ -n "$credentials" ]]; then
-        whiptail --msgbox "Installation abgeschlossen!\n\n$credentials" 12 78 --title "Erforderliche Anmeldeinformationen"
+        whiptail --msgbox "Installation complete!\n\n$credentials" 12 78 --title "Required Credentials"
     else
-        whiptail --msgbox "Installation abgeschlossen! Keine zusätzlichen Anmeldeinformationen erforderlich." 8 78 --title "Erforderliche Anmeldeinformationen"
+        whiptail --msgbox "Installation complete! No additional credentials required." 8 78 --title "Required Credentials"
     fi
 }
 
-# Prüfen, ob Docker installiert ist und produktives Netzwerk existiert
+# Check if Docker is installed and the productive network exists
 if ! docker network inspect produktiv &>/dev/null; then
-    if (whiptail --yesno "Docker und das produktive Netzwerk sind nicht vorhanden. Möchten Sie Docker installieren?" 8 78); then
+    if (whiptail --yesno "Docker and the productive network are not present. Would you like to install Docker?" 8 78); then
         install_docker
     fi
 fi
 
-# Liste der Dienste anzeigen
+# Show the service selection
 show_service_selection
