@@ -104,4 +104,4 @@ wg_dashboard_port=$(whiptail --inputbox "Please enter the WG-Dashboard Web-Port 
     echo 100
 } | whiptail --gauge "Installing Wireguard and WG-Dashboard..." 6 60 0
 
-whiptail --msgbox "Installation abgeschlossen." 8 78 --title "Installation Complete"
+whiptail --msgbox "Installation Complete" 8 78 --title "Installation Complete"
