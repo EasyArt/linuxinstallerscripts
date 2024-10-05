@@ -19,7 +19,7 @@ Welcome to **LinuxInstallerScripts**, a collection of Linux shell scripts design
 
 ## 🛠️ Prerequisites
 
-- A Linux server with `bash` installed.
+- A Linux server with `bash` and `wget` installed.
 - Internet connection to download the scripts.
 
 --- 
