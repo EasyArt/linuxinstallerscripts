@@ -37,7 +37,7 @@ You can run any script directly from our website without downloading it:
 Clone the repository and run the scripts manually on your Linux server:
 
 ```bash
-git clone https://github.com/yourusername/LinuxInstallerScripts.git
+git clone https://github.com/EasyArt/LinuxInstallerScripts.git
 cd LinuxInstallerScripts
 ./scriptname.sh
 ```
