@@ -12,6 +12,9 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+#Install whiptail
+apt install whiptail -y
+
 # Whiptail for inputs
 DOMAIN=$(whiptail --inputbox "Please enter the domain" 8 78 --title "Domain" 3>&1 1>&2 2>&3)
 DOMAIN_ADMIN_GROUP=$(whiptail --inputbox "Please enter the domain admin group" 8 78 --title "Domain Admin Group" 3>&1 1>&2 2>&3)
