@@ -9,6 +9,9 @@
 #            |_|                                           |___/           
 #	11.09.2024
 
+#Install whiptail
+apt install whiptail -y
+
 # Variables to store generated passwords
 mysql_root_password=""
 vaultwarden_admin_token=""
