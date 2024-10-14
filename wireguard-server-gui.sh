@@ -7,6 +7,12 @@
 #    \/  \/   |_|_|  \___|\_____|\__,_|\__,_|_|  \__,_|
 #Raphael Jäger                                                      
 
+# Check if the script is run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root." >&2
+  exit 1
+fi
+
 #Install whiptail
 apt install whiptail -y
 
