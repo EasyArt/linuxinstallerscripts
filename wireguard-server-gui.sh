@@ -7,6 +7,9 @@
 #    \/  \/   |_|_|  \___|\_____|\__,_|\__,_|_|  \__,_|
 #Raphael Jäger                                                      
 
+#Install whiptail
+apt install whiptail -y
+
 # Variables
 eth="$(ip -br l | awk '$1 !~ "lo|vir|wl" { print $1 }')"
 
