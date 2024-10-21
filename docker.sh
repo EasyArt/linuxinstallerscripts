@@ -79,6 +79,23 @@ install_nginx_rpm() {
 	clear
 }
 
+install_zoraxy() {
+    echo "Installing Zoraxy..."
+    docker volume create zoraxy_config
+    docker volume create zoraxy_zerotier
+
+    docker run -d --name zoraxy --network produktiv --restart always \
+      -p 80:80 -p 443:443 -p 8000:8000 \
+      -v zoraxy_config:/opt/zoraxy/config \
+      -v zoraxy_zerotier:/var/lib/zerotier-one \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v /etc/localtime:/etc/localtime:ro \
+      -e FASTGEOIP=true \
+      -e ZEROTIER=true \
+      zoraxydocker/zoraxy:latest
+	clear
+}
+
 install_mysql() {
     echo "Installing MySQL..."
     mysql_root_password=$(openssl rand -base64 12)
@@ -132,19 +149,21 @@ show_service_selection() {
     services=$(whiptail --checklist "Select the services to install:" 20 78 10 \
     "1" "Install Portainer" off \
     "2" "Install NGINX Proxy Manager" off \
-    "3" "Install MySQL" off \
-    "4" "Install Apache Guacamole" off \
-    "5" "Install Vaultwarden" off \
-    "6" "Install Watchtower" off 3>&1 1>&2 2>&3)
+    "3" "Install Zoraxy" off \
+    "4" "Install MySQL" off \
+    "5" "Install Apache Guacamole" off \
+    "6" "Install Vaultwarden" off \
+    "7" "Install Watchtower" off 3>&1 1>&2 2>&3)
 
     for service in $services; do
         case $service in
             "\"1\"") install_portainer ;;
             "\"2\"") install_nginx_rpm ;;
-            "\"3\"") install_mysql ;;
-            "\"4\"") install_guacamole ;;
-            "\"5\"") install_vaultwarden ;;
-            "\"6\"") install_watchtower ;;
+	    "\"3\"") install_zoraxy ;;
+            "\"4\"") install_mysql ;;
+            "\"5\"") install_guacamole ;;
+            "\"6\"") install_vaultwarden ;;
+            "\"7\"") install_watchtower ;;
         esac
     done
 
