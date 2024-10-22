@@ -137,6 +137,7 @@ install_watchtower() {
     cron_time="0 $hour * * *"
 
     docker run -d --name watchtower --network produktiv --restart always \
+      -v /var/run/docker.sock:/var/run/docker.sock \
       -e TZ="$timezone" \
       -e WATCHTOWER_SCHEDULE="$cron_time" \
       containrrr/watchtower
