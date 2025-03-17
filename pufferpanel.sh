@@ -9,19 +9,7 @@
 #                             |_|                       
 # 17.03.2025 Raphael Jäger
 
-# Ensure sudo is installed
-if ! command -v sudo &> /dev/null; then
-    echo "Installing sudo..."
-    apt update
-    apt install -y sudo
-fi
-
-# Ensure curl is installed
-if ! command -v curl &> /dev/null; then
-    echo "Installing curl..."
-    sudo apt update
-    sudo apt install -y curl
-fi
+apt install sudo -y && apt install curl -y
 
 # Ensure whiptail is installed
 if ! command -v whiptail &> /dev/null; then
