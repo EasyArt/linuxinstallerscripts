@@ -9,7 +9,7 @@
 #                             |_|                       
 # 17.03.2025 Raphael Jäger
 
-apt install sudo -y && apt install curl -y
+apt install sudo -y && apt install curl -y && apt install bc -y
 
 # Ensure whiptail is installed
 if ! command -v whiptail &> /dev/null; then
