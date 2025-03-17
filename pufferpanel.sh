@@ -9,6 +9,12 @@
 #                             |_|                       
 # 17.03.2025 Raphael Jäger
 
+# Ensure sudo is installed
+if ! command -v sudo &> /dev/null; then
+    echo "Installing sudo..."
+    apt update
+    apt install -y sudo
+fi
 
 # Ensure whiptail is installed
 if ! command -v whiptail &> /dev/null; then
