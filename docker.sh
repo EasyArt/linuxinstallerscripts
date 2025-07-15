@@ -106,16 +106,6 @@ install_mysql() {
 	clear
 }
 
-install_guacamole() {
-    echo "Installing Apache Guacamole..."
-    docker volume create guacamole
-
-    docker run -d --name guacamole --network produktiv --restart always \
-      -v guacamole:/config -h guacamole \
-      oznu/guacamole:latest
-	clear
-}
-
 install_vaultwarden() {
 	docker volume create vaultwarden
 	vaultwarden_admin_token=$(openssl rand -base64 30 | tr -d /=+ | cut -c -30)
@@ -151,9 +141,8 @@ show_service_selection() {
     "2" "Install NGINX Proxy Manager" off \
     "3" "Install Zoraxy" off \
     "4" "Install MySQL" off \
-    "5" "Install Apache Guacamole" off \
-    "6" "Install Vaultwarden" off \
-    "7" "Install Watchtower" off 3>&1 1>&2 2>&3)
+    "5" "Install Vaultwarden" off \
+    "6" "Install Watchtower" off 3>&1 1>&2 2>&3)
 
     for service in $services; do
         case $service in
@@ -161,9 +150,8 @@ show_service_selection() {
             "\"2\"") install_nginx_rpm ;;
 	    "\"3\"") install_zoraxy ;;
             "\"4\"") install_mysql ;;
-            "\"5\"") install_guacamole ;;
-            "\"6\"") install_vaultwarden ;;
-            "\"7\"") install_watchtower ;;
+            "\"5\"") install_vaultwarden ;;
+            "\"6\"") install_watchtower ;;
         esac
     done
 
