@@ -17,7 +17,7 @@ if ! command -v whiptail >/dev/null 2>&1; then
 fi
 
 # Install mysql-client (needed for connectivity check and SQL execution)
-apt update && apt install -y mysql-client
+apt update && apt install -y mariadb-client
 
 # Check if docker network 'produktiv' exists
 if ! docker network ls --format '{{.Name}}' | grep -q '^produktiv$'; then
@@ -565,7 +565,7 @@ JOIN guacamole_user            ON guacamole_user.entity_id = affected.entity_id;
 EOF
 
 # Cleanup: remove mysql-client again
-apt purge -y mysql-client && apt autoremove -y
+apt purge -y mariadb-client && apt autoremove -y
 
 # Final success message
 whiptail --title "Installation Complete" \
