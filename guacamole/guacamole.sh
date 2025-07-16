@@ -78,8 +78,8 @@ docker run -d \
     guacamole/guacamole
 
 # URLs der SQL-Dateien
-SCHEMA_URL="https://example.com/guacamole/schema.sql"
-ADMIN_URL="https://example.com/guacamole/admin.sql"
+SCHEMA_URL="https://raw.githubusercontent.com/EasyArt/linuxinstallerscripts/refs/heads/main/guacamole/001-create-schema.sql"
+ADMIN_URL="https://raw.githubusercontent.com/EasyArt/linuxinstallerscripts/refs/heads/main/guacamole/002-create-admin-user.sql"
 
 # Temporäre Dateien
 SCHEMA_FILE="/tmp/guacamole_schema.sql"
