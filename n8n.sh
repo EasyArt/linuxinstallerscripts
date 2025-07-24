@@ -1,5 +1,12 @@
 #!/bin/bash
-
+#        ___        
+#       / _ \       
+# _ __ | (_) |_ __  
+#| '_ \ > _ <| '_ \ 
+#| | | | (_) | | | |
+#|_| |_|\___/|_| |_|
+# 24.07.2025 Raphael Jäger                  
+       
 # Install whiptail if not present
 if ! command -v whiptail &> /dev/null; then
     echo "Installing whiptail..."
