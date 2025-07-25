@@ -1,0 +1,19 @@
+<p>
+    This script is used to join a Linux server to an Active Directory (AD). It uses <strong>Whiptail</strong> to provide user-friendly input fields for the required parameters such as domain, admin group, user, and password. After entering this information, the script performs the following steps:
+</p>
+<ul>
+    <li>Installation of the necessary packages for AD integration, such as <code>realmd</code>, <code>sssd</code>, and <code>krb5-user</code>.</li>
+    <li>Domain join of the Linux server using the provided credentials.</li>
+    <li>Configuration of the Sudoers file to grant root privileges to the specified domain admin group on the server.</li>
+    <li>Adjustment of the <code>sssd.conf</code> to control access to the server through Active Directory.</li>
+</ul>
+<p>
+    The LDAP filter for access control is dynamically queried via <strong>Whiptail</strong>. An example of the <strong>AD Access Filter</strong> might look like this:
+</p>
+<pre>
+(memberOf=CN=Domain-Admins,OU=Admin,OU=UserGroups,DC=domain,DC=local)
+</pre>
+<p>
+    After successful execution of the script, the console is cleared, and a final message in a Whiptail dialog box shows the success of the installation and configuration.
+</p>
+<p style="color: #FF6666;">Updated: 02.10.2024</p>

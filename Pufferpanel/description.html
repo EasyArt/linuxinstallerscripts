@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PufferPanel Installation & Migration Script</title>
+</head>
+<body>
+    <h1>PufferPanel Installation & Migration Script</h1>
+    <p>This shell script provides an interactive setup for installing, migrating, managing users, and uninstalling PufferPanel on a Debian-based system. It utilizes <code>whiptail</code> to guide users through the process and ensures system compatibility.</p>
+    
+    <h2>Step-by-Step Process</h2>
+    <ol>
+        <li>Check if <code>whiptail</code> is installed; if not, install it.</li>
+        <li>Display a menu to choose between installation, migration, user creation, or uninstallation.</li>
+        <li>If installation is selected, prompt the user to choose between PufferPanel v2 and v3.</li>
+        <li>Before installing PufferPanel v3 or migrating from v2 to v3, verify that the system is running Debian 12 or higher. If the system runs Debian 11 or older, the process is aborted with a message.</li>
+        <li>Install PufferPanel v2 or v3 based on user selection, enabling the service and adding a user.</li>
+        <li>For migration, update the repository, install the latest version, and restart the service.</li>
+        <li>Provide an option to create a new PufferPanel user at any time.</li>
+        <li>Allow users to completely remove PufferPanel if desired.</li>
+    </ol>
+    
+    <p>After completion, users will have a fully functional PufferPanel installation, the ability to migrate to a newer version, manage users, or remove the application as needed.</p>
+    
+    <p style="color: #FF6666;">Updated: 17.03.2025</p>
+</body>
+</html>

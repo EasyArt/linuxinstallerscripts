@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<h1>n8n Installation Script</h1>
+<p>This shell script automates the installation and configuration of <strong>n8n</strong>, an extendable workflow automation tool. The script checks for required Docker settings, prompts the user for the timezone, and deploys the n8n container in a predefined Docker network.</p>
+
+<h2>Step-by-Step Process</h2>
+<ol>
+    <li>Ensure <code>whiptail</code> is installed for interactive input.</li>
+    <li>Prompt the user to input their preferred timezone (e.g., Europe/Berlin).</li>
+    <li>Create a persistent Docker volume for n8n data.</li>
+    <li>Deploy the n8n container with proper environment variables and volume mounts.</li>
+</ol>
+
+<p><strong>n8n</strong> (short for “node-by-node”) is a powerful automation platform that allows users to create custom workflows connecting different apps and services — similar to Zapier or Make, but open-source and self-hosted.</p>
+
+<p>Once the script is complete, n8n is ready to use and can be accessed via the configured Docker environment.</p>
+
+<p style="color: #FF6666;">Updated: 24.07.2025</p>
