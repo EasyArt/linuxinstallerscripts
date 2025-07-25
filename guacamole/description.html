@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guacamole Installation Script</title>
+</head>
+<body>
+    <h1>Guacamole Docker Installation Script</h1>
+    <p>This shell script installs and configures Apache Guacamole using Docker. It guides the user through the setup process and deploys the required containers.</p>
+    
+    <h2>Step-by-Step Process</h2>
+    <ol>
+        <li>Prompt the user for MySQL connection details using a dialog interface.</li>
+        <li>Verify Docker network <code>produktiv</code> exists.</li>
+        <li>Create the Guacamole Docker volume if not present.</li>
+        <li>Run the <code>guacd</code> container.</li>
+        <li>Run the <code>guacamole</code> container with environment variables pointing to the MySQL database.</li>
+        <li>Initialize the MySQL database with the required Guacamole schema and an admin user.</li>
+        <li>Display a success message once installation is complete.</li>
+    </ol>
+    
+    <p>After the installation is finished, Guacamole is ready to use via your configured reverse proxy or hostname.</p>
+    
+    <p style="color: #FF6666;">Updated: 15.07.2025</p>
+</body>
+</html>
