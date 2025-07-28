@@ -19,7 +19,6 @@ apt install whiptail -y
 
 # Variables to store generated passwords
 mysql_root_password=""
-vaultwarden_admin_token=""
 
 # Functions for installing different options
 
@@ -106,17 +105,15 @@ install_mysql() {
 	clear
 }
 
-install_vaultwarden() {
-	docker volume create vaultwarden
-	vaultwarden_admin_token=$(openssl rand -base64 30 | tr -d /=+ | cut -c -30)
-
+install_portaineragent() {
 	docker run -d \
-	  --name vaultwarden \
-	  --network produktiv \
-	  --hostname vaultwarden \
-	  -v vaultwarden:/data \
-	  -e ADMIN_TOKEN=$vaultwarden_admin_token \
-	  vaultwarden/server:latest
+	  -p 9001:9001 \
+	  --name portainer_agent \
+	  --restart=always \
+	  -v /var/run/docker.sock:/var/run/docker.sock \
+	  -v /var/lib/docker/volumes:/var/lib/docker/volumes \
+	  -v /:/host \
+	  portainer/agent:2.27.9
 	clear
 }
 
@@ -141,7 +138,7 @@ show_service_selection() {
     "2" "Install NGINX Proxy Manager" off \
     "3" "Install Zoraxy" off \
     "4" "Install MySQL" off \
-    "5" "Install Vaultwarden" off \
+    "5" "Install Portainer Agent" off \
     "6" "Install Watchtower" off 3>&1 1>&2 2>&3)
 
     for service in $services; do
@@ -150,7 +147,7 @@ show_service_selection() {
             "\"2\"") install_nginx_rpm ;;
 	    "\"3\"") install_zoraxy ;;
             "\"4\"") install_mysql ;;
-            "\"5\"") install_vaultwarden ;;
+            "\"5\"") install_portaineragent ;;
             "\"6\"") install_watchtower ;;
         esac
     done
@@ -165,10 +162,6 @@ display_credentials() {
 
     if [[ -n "$mysql_root_password" ]]; then
         credentials+="MySQL Root Password: $mysql_root_password\n"
-    fi
-
-    if [[ -n "$vaultwarden_admin_token" ]]; then
-        credentials+="Vaultwarden Admin Token: $vaultwarden_admin_token\n"
     fi
 
     if [[ -n "$credentials" ]]; then
