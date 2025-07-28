@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vaultwarden Installation Script</title>
+</head>
+<body>
+    <h1>Vaultwarden Installation Script</h1>
+    <p>
+        This interactive shell script installs <strong>Vaultwarden</strong> (a lightweight Bitwarden-compatible password manager)
+        on a Docker-based Debian system. It uses <code>whiptail</code> for user feedback and checks for the necessary Docker setup.
+    </p>
+
+    <h2>Step-by-Step Process</h2>
+    <ol>
+        <li>Verify if the Docker network <code>produktiv</code> exists.</li>
+        <li>Create a persistent Docker volume named <code>vaultwarden</code> to store all data.</li>
+        <li>Generate a secure 30-character admin token using <code>openssl</code>.</li>
+        <li>Launch the Vaultwarden container with environment variable <code>ADMIN_TOKEN</code>, hostname <code>vaultwarden</code>, and attach it to the <code>produktiv</code> network.</li>
+        <li>Display the generated admin token in a <code>whiptail</code> message box for the user to copy and store securely.</li>
+    </ol>
+
+    <p>After completion, users will have a secure, persistent Vaultwarden instance running on Docker, with easy access to the admin panel via the generated token.</p>
+
+    <p style="color: #FF6666;">Updated: 28.07.2025</p>
+</body>
+</html>
