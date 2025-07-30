@@ -1,0 +1,71 @@
+#!/bin/bash
+#  _____           _       _                   _    _                                      _        
+#|  __ \         | |     (_)                 | |  | |                                    | |       
+#| |  | |   ___  | |__    _    __ _   _ __   | |  | |  _ __     __ _   _ __    __ _    __| |   ___ 
+#| |  | |  / _ \ | '_ \  | |  / _` | | '_ \  | |  | | | '_ \   / _` | | '__|  / _` |  / _` |  / _ \
+#| |__| | |  __/ | |_) | | | | (_| | | | | | | |__| | | |_) | | (_| | | |    | (_| | | (_| | |  __/
+#|_____/   \___| |_.__/  |_|  \__,_| |_| |_|  \____/  | .__/   \__, | |_|     \__,_|  \__,_|  \___|
+#                                                     | |       __/ |                              
+#                                                     |_|      |___/                               
+# Raphael Jäger
+set -e
+
+# Root-Prüfung
+if [[ "$EUID" -ne 0 ]]; then
+    echo "Bitte führe dieses Skript als root aus."
+    exit 1
+fi
+
+# Whiptail installieren, falls nicht vorhanden
+if ! command -v whiptail >/dev/null 2>&1; then
+    apt update -qq
+    apt install -y whiptail
+fi
+
+# Benutzer informieren
+whiptail --title "Debian 13 Upgrade" --msgbox "Dieses Skript wird dein System von Debian 12 (bookworm) auf Debian 13 (trixie) upgraden.\n\nSicherung deiner Daten wird empfohlen!" 12 60
+
+# Bestätigung einholen
+if ! whiptail --title "Fortfahren?" --yesno "Möchtest du mit dem Upgrade fortfahren?" 8 60; then
+    exit 0
+fi
+
+# Backup der aktuellen APT-Quellen
+cp -v /etc/apt/sources.list /etc/apt/sources.list.bak
+
+# Ersetze bookworm durch trixie
+sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
+
+# Drittanbieter-Repos anpassen (z. B. Docker)
+DOCKER_LIST="/etc/apt/sources.list.d/docker.list"
+if [[ -f "$DOCKER_LIST" ]]; then
+    sed -i 's/bookworm/trixie/g' "$DOCKER_LIST"
+fi
+
+# Whiptail-Info
+whiptail --title "Update APT" --infobox "APT-Quellen wurden angepasst.\n\nFühre nun 'apt update' und dist-upgrade aus..." 8 60
+
+# Aktualisieren der Paketquellen
+apt update -y -qq || {
+    whiptail --title "Fehler" --msgbox "Fehler beim Ausführen von apt update. Upgrade abgebrochen." 8 60
+    exit 1
+}
+
+# Optionale Prüfung auf veraltete Pakete (vorab)
+apt list --upgradable | grep -v "^Listing" > /tmp/upgradable.txt
+
+# Upgrade starten
+whiptail --title "Upgrade starten" --yesno "APT ist aktualisiert.\n\nSoll das vollständige Upgrade auf Debian 13 jetzt durchgeführt werden?" 10 60
+if [[ $? -eq 0 ]]; then
+    apt full-upgrade -y
+    apt autoremove -y
+    whiptail --title "Upgrade abgeschlossen" --msgbox "Das Upgrade wurde abgeschlossen.\n\nEin Neustart wird empfohlen." 10 60
+else
+    whiptail --title "Abgebrochen" --msgbox "Das Upgrade wurde abgebrochen." 8 60
+    exit 0
+fi
+
+# Neustart anbieten
+if whiptail --title "Neustart" --yesno "Möchtest du das System jetzt neu starten?" 8 60; then
+    reboot
+fi
