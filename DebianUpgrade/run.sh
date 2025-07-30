@@ -8,87 +8,77 @@
 #                                                     | |       __/ |                              
 #                                                     |_|      |___/                               
 # Raphael Jäger
+#!/bin/bash
 set -e
 
-# Root-Prüfung
+# Ensure script is run as root
 if [[ "$EUID" -ne 0 ]]; then
-    echo "Bitte führe dieses Skript als root aus."
+    echo "Please run this script as root."
     exit 1
 fi
 
-# Whiptail installieren, falls nicht vorhanden
+# Install whiptail if not present
 if ! command -v whiptail &> /dev/null; then
     apt update -qq
     apt install -y whiptail
 fi
 
-# Unterstützte Releases in Reihenfolge
-declare -A DEBIAN_RELEASES
-DEBIAN_RELEASES["stretch"]="Debian 9"
-DEBIAN_RELEASES["buster"]="Debian 10"
-DEBIAN_RELEASES["bullseye"]="Debian 11"
-DEBIAN_RELEASES["bookworm"]="Debian 12"
-DEBIAN_RELEASES["trixie"]="Debian 13"
+# Ordered list of Debian releases
+RELEASE_CHAIN=("stretch" "buster" "bullseye" "bookworm" "trixie")
+declare -A RELEASE_NAMES=(
+    [stretch]="Debian 9"
+    [buster]="Debian 10"
+    [bullseye]="Debian 11"
+    [bookworm]="Debian 12"
+    [trixie]="Debian 13"
+)
 
-# Aktuell installierte Version ermitteln
+# Detect current version
 CURRENT_VERSION=$(lsb_release -cs)
 
-# Verfügbare neuere Versionen ermitteln
-UPGRADE_OPTIONS=()
-FOUND_CURRENT=false
-for CODE in "${!DEBIAN_RELEASES[@]}"; do
-    if [[ "$CODE" == "$CURRENT_VERSION" ]]; then
-        FOUND_CURRENT=true
-        continue
+# Determine next target version
+TARGET_VERSION=""
+for i in "${!RELEASE_CHAIN[@]}"; do
+    if [[ "${RELEASE_CHAIN[$i]}" == "$CURRENT_VERSION" && $((i+1)) -lt ${#RELEASE_CHAIN[@]} ]]; then
+        TARGET_VERSION="${RELEASE_CHAIN[$((i+1))]}"
+        break
     fi
-    $FOUND_CURRENT && UPGRADE_OPTIONS+=("$CODE" "${DEBIAN_RELEASES[$CODE]}" "off")
 done
 
-# Wenn keine neueren Releases gefunden wurden
-if [[ ${#UPGRADE_OPTIONS[@]} -eq 0 ]]; then
-    whiptail --msgbox "Du verwendest bereits die neueste unterstützte Debian-Version ($CURRENT_VERSION)." 8 60
-    exit 0
-fi
-
-# Upgrade-Ziel auswählen
-TARGET_VERSION=$(whiptail --title "Debian Upgrade" --checklist \
-"Dein System verwendet derzeit: ${DEBIAN_RELEASES[$CURRENT_VERSION]} ($CURRENT_VERSION)\n\nWähle die Zielversion für das Upgrade:" \
-20 78 10 "${UPGRADE_OPTIONS[@]}" 3>&1 1>&2 2>&3 | tr -d '"')
-
-# Abbrechen
+# No higher version available
 if [[ -z "$TARGET_VERSION" ]]; then
-    whiptail --msgbox "Upgrade abgebrochen." 8 60
+    whiptail --title "Debian Upgrade" --msgbox "You are already using the latest Debian release: $CURRENT_VERSION." 8 60
     exit 0
 fi
 
-# Hinweis anzeigen
-whiptail --title "Upgrade starten" --yesno "Upgrade von ${DEBIAN_RELEASES[$CURRENT_VERSION]} auf ${DEBIAN_RELEASES[$TARGET_VERSION]}?\n\nSicherung wird dringend empfohlen!" 10 60 || exit 0
+# Ask for confirmation
+whiptail --title "Upgrade Preparation" --yesno \
+"You are currently using: ${RELEASE_NAMES[$CURRENT_VERSION]} ($CURRENT_VERSION)\n\nThe upgrade target is:\n${RELEASE_NAMES[$TARGET_VERSION]} ($TARGET_VERSION)\n\n⚠️ Please make a backup before proceeding.\n\nDo you want to continue?" \
+15 60 || exit 0
 
-# Sicherung der APT-Quellen
+# Backup sources.list
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 
-# Quellen aktualisieren
+# Replace codename in sources.list
 sed -i "s/${CURRENT_VERSION}/${TARGET_VERSION}/g" /etc/apt/sources.list
 
-# Docker-Repo anpassen (falls vorhanden)
+# Update Docker repo if exists
 DOCKER_LIST="/etc/apt/sources.list.d/docker.list"
 if [[ -f "$DOCKER_LIST" ]]; then
     sed -i "s/${CURRENT_VERSION}/${TARGET_VERSION}/g" "$DOCKER_LIST"
 fi
 
-# Paketquellen aktualisieren
+# Run upgrade
 apt update -y -qq
-
-# Upgrade starten
-whiptail --title "Upgrade wird ausgeführt..." --infobox "Das System wird jetzt auf Debian ${DEBIAN_RELEASES[$TARGET_VERSION]} aktualisiert..." 8 60
 apt full-upgrade -y
 apt autoremove -y
 
-# Erfolgsmeldung
-whiptail --msgbox "Upgrade abgeschlossen! Ein Neustart wird empfohlen." 8 60
+# Notify user
+whiptail --title "Upgrade Complete" --msgbox \
+"The upgrade to ${RELEASE_NAMES[$TARGET_VERSION]} has been completed.\n\nA system reboot is recommended." \
+10 60
 
-# Neustart?
-if whiptail --yesno "Möchtest du das System jetzt neu starten?" 8 60; then
+# Offer reboot
+if whiptail --yesno "Would you like to reboot now?" 8 60; then
     reboot
 fi
-
