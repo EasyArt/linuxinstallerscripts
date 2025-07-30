@@ -1,0 +1,17 @@
+<h1>Nextcloud Docker Setup Script</h1>
+<p>This interactive shell script helps you quickly deploy a Nextcloud instance inside a Docker container. It guides users through configuration via <code>whiptail</code> dialogs and supports optional Redis integration and custom data paths.</p>
+
+<h2>Step-by-Step Process</h2>
+<ol>
+    <li>Prompt for <code>trusted_proxies</code> to be set in the Nextcloud configuration.</li>
+    <li>Ask whether to use a custom data directory path (e.g., <code>/home/nextcloud</code>) or use the default path (<code>/opt/nextcloud</code>).</li>
+    <li>Optionally enable Redis caching by providing the Redis server’s IP and port.</li>
+    <li>Select the default language (German or English); this also sets the default phone region accordingly (DE or US).</li>
+    <li>Enter your Nextcloud domain (without <code>https://</code>), e.g., <code>cloud.example.com</code>.</li>
+    <li>Create necessary folders (<code>config</code>, <code>html</code>, <code>data</code>) and set proper permissions for the <code>www-data</code> user.</li>
+    <li>Generate a valid <code>config.php</code> file including all selected options.</li>
+    <li>Launch the Nextcloud Docker container with mounted volumes and the specified configuration.</li>
+    <li>Display a success message including the final URL to access the Nextcloud web interface.</li>
+</ol>
+
+<p>Once completed, you'll have a fully operational Nextcloud container ready to be finalized via the web interface. The script supports optional Redis caching and flexible data directory locations for advanced setups.</p>
