@@ -102,7 +102,7 @@ if [ "$USE_CUSTOM_PATH" = "yes" ]; then
     DOCKER_CMD+=" -v $DATADIR:$DATADIR_CONTAINER"
 fi
 
-DOCKER_CMD+=" nextcloud"
+DOCKER_CMD+=" nextcloud bash -c 'apt update && apt install -y smbclient && apache2-foreground'"
 
 eval $DOCKER_CMD || error_exit "Failed to start the Nextcloud container."
 
