@@ -29,11 +29,17 @@ fi
 # --- User input ---
 TRUSTED_PROXIES=$(whiptail --title "Trusted Proxies" --inputbox "Enter trusted proxy IPs (comma-separated):" 10 60 "10.0.0.0/8" 3>&1 1>&2 2>&3)
 
-USE_CUSTOM_PATH=$(whiptail --title "Data Directory" --yesno "Do you want to use a custom data directory path?" 10 60 && echo "yes" || echo "no")
+if whiptail --title "Data Directory" --yesno "Do you want to use a custom data directory path?" 10 60; then
+    USE_CUSTOM_PATH="yes"
+else
+    USE_CUSTOM_PATH="no"
+fi
+
 if [ "$USE_CUSTOM_PATH" = "yes" ]; then
     DATADIR=$(whiptail --title "Custom Data Directory" --inputbox "Enter full host path for data (e.g. /mnt/storage/nextcloud):" 10 60 "/mnt/storage/nextcloud" 3>&1 1>&2 2>&3)
     mkdir -p "$DATADIR"
     chown -R 33:33 "$DATADIR"
+    chmod -R 750 "$DATADIR"
     DATADIR_CONTAINER="/mnt/data"
 fi
 
@@ -100,12 +106,15 @@ DOCKER_CMD+=" nextcloud"
 
 eval $DOCKER_CMD || error_exit "Failed to start the Nextcloud container."
 
-# --- Copy config.php into the container ---
-sleep 5  # Give container time to start
+# --- Copy config.php into container ---
+sleep 5
 docker cp "$CONFIG_FILE" nextcloud:/var/www/html/config/config.php || error_exit "Failed to copy config.php into container."
+
+# --- Set correct permissions ---
+docker exec nextcloud chown www-data:www-data /var/www/html/config/config.php || error_exit "Failed to set permissions on config.php"
 
 # --- Done ---
 whiptail --title "Installation Complete" --msgbox "Nextcloud has been successfully installed!\nOpen https://$NEXTCLOUD_HOST to complete the setup." 10 60
 
-# --- Cleanup ---
 rm -rf "$TEMP_DIR"
+
