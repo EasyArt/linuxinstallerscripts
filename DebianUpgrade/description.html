@@ -1,0 +1,16 @@
+<h1>Debian Upgrade Script</h1>
+<p>This interactive shell script helps you safely upgrade your Debian system to the next stable release. It uses <code>whiptail</code> dialogs to guide the user through the process and ensures proper version detection and confirmation before proceeding.</p>
+
+<h2>Step-by-Step Process</h2>
+<ol>
+    <li>Ensure the script is run with root privileges, otherwise abort.</li>
+    <li>Detect the current Debian codename (e.g., <code>bookworm</code>).</li>
+    <li>Determine the next available Debian release (e.g., <code>trixie</code>).</li>
+    <li>Show a confirmation dialog including current and target release names.</li>
+    <li>Back up the existing <code>/etc/apt/sources.list</code> file.</li>
+    <li>Replace all occurrences of the current codename with the target in <code>sources.list</code> and (if present) <code>docker.list</code>.</li>
+    <li>Run <code>apt update</code>, <code>apt full-upgrade</code>, and <code>apt autoremove</code> to perform the distribution upgrade.</li>
+    <li>Notify the user that the upgrade has been completed and offer a reboot.</li>
+</ol>
+
+<p>Once finished, your system will be upgraded to the next Debian release. A reboot is strongly recommended after the upgrade to ensure all changes take effect.</p>
