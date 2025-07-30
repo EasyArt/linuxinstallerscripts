@@ -5,11 +5,22 @@
 # \___ \ / _ \ '__\ \ / / _ \ '__|
 # ____) |  __/ |   \ V /  __/ |   
 #|_____/ \___|_|    \_/ \___|_|   
-# Serversetup by Raphael Jäger 04.03.2025                                 
+# Serversetup by Raphael Jäger                               
+
+# Check Debian version
+get_fetch_tool() {
+    DEBIAN_VERSION=$(grep -oP '(?<=VERSION_ID=")[^"]+' /etc/os-release)
+    if (( ${DEBIAN_VERSION%%.*} < 13 )); then
+        echo "neofetch"
+    else
+        echo "fastfetch"
+    fi
+}
 
 # Function to modify /etc/profile (Beautiful login)
 modify_profile() {
-    PROFILE_CONTENT="\nclear\nfiglet -f big \"\$(hostname)\"\necho \"==============================\"\necho \"Support: shquick@jaeger-raphael.de\"\necho \"==============================\"\nneofetch\n"
+    FETCH_TOOL=$(get_fetch_tool)
+    PROFILE_CONTENT="\nclear\nfiglet -f big \"\$(hostname)\"\necho \"==============================\"\necho \"Support: shquick@jaeger-raphael.de\"\necho \"==============================\"\n$FETCH_TOOL\n"
 
     if ! grep -q "Support: shquick@jaeger-raphael.de" /etc/profile; then
         echo -e "# The following entries were added by this script. Do not add again.\n$PROFILE_CONTENT" >> /etc/profile
@@ -61,7 +72,8 @@ install_cockpit() {
 }
 
 # Install required packages
-apt update && apt install -y whiptail neofetch figlet sudo htop curl
+FETCH_TOOL=$(get_fetch_tool)
+apt update && apt install -y whiptail figlet sudo htop curl $FETCH_TOOL
 
 # Main menu
 CHOICE=$(whiptail --title "Setup Menu" --menu "Choose an option:" 15 50 3 \
