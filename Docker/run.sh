@@ -131,24 +131,34 @@ install_watchtower() {
 	clear
 }
 
+remove_docker_deb12() {
+    echo "Removing Old Deb12 Repo..."
+    FILE="/etc/apt/sources.list.d/docker.list"
+    if [[ -f "$FILE" ]]; then
+        sed -i '/bookworm/d' "$FILE"
+    fi
+}
+
 # Function for GUI multi-selection
 show_service_selection() {
     services=$(whiptail --checklist "Select the services to install:" 20 78 10 \
-    "1" "Install Portainer" off \
-    "2" "Install NGINX Proxy Manager" off \
-    "3" "Install Zoraxy" off \
-    "4" "Install MySQL" off \
-    "5" "Install Portainer Agent" off \
-    "6" "Install Watchtower" off 3>&1 1>&2 2>&3)
+    "1" "Remove old Deb12 Repository" off \
+    "2" "Install Portainer" off \
+    "3" "Install Portainer Agent" off \
+    "4" "Install NGINX Proxy Manager" off \
+    "5" "Install Zoraxy" off \
+    "6" "Install MySQL" off \
+    "7" "Install Watchtower" off 3>&1 1>&2 2>&3)
 
     for service in $services; do
         case $service in
-            "\"1\"") install_portainer ;;
-            "\"2\"") install_nginx_rpm ;;
-	    "\"3\"") install_zoraxy ;;
-            "\"4\"") install_mysql ;;
-            "\"5\"") install_portaineragent ;;
-            "\"6\"") install_watchtower ;;
+	    "\"1\"") remove_docker_deb12 ;;
+            "\"2\"") install_portainer ;;
+            "\"3\"") install_portaineragent ;;
+            "\"4\"") install_nginx_rpm ;;
+	    "\"5\"") install_zoraxy ;;
+            "\"6\"") install_mysql ;;
+            "\"7\"") install_watchtower ;;
         esac
     done
 
