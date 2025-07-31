@@ -96,7 +96,7 @@ fi
 echo ");" >> "$CONFIG_FILE"
 
 # --- Start Nextcloud container ---
-DOCKER_CMD="docker run -d --name nextcloud --hostname nextcloud --network produktiv -v nextcloud:/var/www/html"
+DOCKER_CMD="docker run -d --restart always --name nextcloud --hostname nextcloud --network produktiv -v nextcloud:/var/www/html"
 
 if [ "$USE_CUSTOM_PATH" = "yes" ]; then
     DOCKER_CMD+=" -v $DATADIR:$DATADIR_CONTAINER"
