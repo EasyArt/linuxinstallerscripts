@@ -27,9 +27,28 @@ wg_dashboard_port=$(whiptail --inputbox "Please enter the WG-Dashboard Web-Port 
 
 # Installing Wireguard
 {
-    echo 10
-    echo "Installing Wireguard..." >/dev/null 2>&1
-    echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf >/dev/null 2>&1
+	echo 10
+	DEB_VER_ID=""
+	if [ -r /etc/os-release ]; then
+	  . /etc/os-release
+	  DEB_VER_ID="${VERSION_ID%%.*}"
+	else
+	  DEB_VER_ID="$(cut -d'.' -f1 </etc/debian_version 2>/dev/null || echo)"
+	fi
+
+	if [ "$DEB_VER_ID" = "13" ]; then
+	  # Debian 13: modern via sysctl.d + sysctl --system
+	  printf 'net.ipv4.ip_forward = 1\n' >/etc/sysctl.d/99-ipforward.conf
+	  sysctl --system >/dev/null 2>&1 || true
+	else
+	  # Debian 12 (und älter): klassisch in /etc/sysctl.conf + sofort aktivieren
+	  if grep -q '^net.ipv4.ip_forward' /etc/sysctl.conf 2>/dev/null; then
+		sed -i 's/^net.ipv4.ip_forward.*/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+	  else
+		echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+	  fi
+	  sysctl -w net.ipv4.ip_forward=1 >/dev/null 2>&1 || true
+	fi
     
     echo 20
     echo "Installing sudo..." >/dev/null 2>&1
