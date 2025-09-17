@@ -86,10 +86,9 @@ install_zoraxy() {
       -p 80:80 -p 443:443 -p 8000:8000 \
       -v zoraxy_config:/opt/zoraxy/config \
       -v zoraxy_zerotier:/var/lib/zerotier-one \
-      -v /var/run/docker.sock:/var/run/docker.sock \
       -v /etc/localtime:/etc/localtime:ro \
       -e FASTGEOIP=true \
-      -e ZEROTIER=true \
+      -e ZEROTIER=false \
       zoraxydocker/zoraxy:latest
 	clear
 }
