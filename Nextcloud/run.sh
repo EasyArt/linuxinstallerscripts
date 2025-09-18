@@ -84,6 +84,7 @@ fi
 if [ "$USE_REDIS" = true ]; then
 cat <<EOF >> "$CONFIG_FILE"
   'memcache.distributed' => '\\\\OC\\\\Memcache\\\\Redis',
+  'memcache.locking' => '\\\\OC\\\\Memcache\\\\Redis',
   'memcache.local' => '\\\\OC\\\\Memcache\\\\Redis',
   'redis' => array(
     'host' => '$REDIS_IP',
