@@ -73,6 +73,7 @@ cat <<EOF > "$CONFIG_FILE"
   'overwrite.cli.url' => 'https://$NEXTCLOUD_HOST',
   'overwritehost' => '$NEXTCLOUD_HOST',
   'overwriteprotocol' => 'https',
+  'maintenance_window_start' => 3,
 EOF
 
 if [ "$USE_CUSTOM_PATH" = "yes" ]; then
