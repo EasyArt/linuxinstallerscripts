@@ -114,7 +114,7 @@ docker cp "$CONFIG_FILE" nextcloud:/var/www/html/config/config.php || error_exit
 docker exec nextcloud chown www-data:www-data /var/www/html/config/config.php || error_exit "Failed to set permissions on config.php"
 
 # --- Install smbclient and set crontab ---
-docer exec -it nextcloud apt update && apt install smbclient -y
+docker exec -it nextcloud apt update && apt install smbclient -y
 (crontab -l 2>/dev/null ; echo "0 1 * * * docker exec nextcloud sh -c 'apt update && apt install smbclient -y'") | crontab -
 
 # --- Done ---
