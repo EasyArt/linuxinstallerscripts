@@ -1,0 +1,18 @@
+<section>
+  <h2>Collabora Online Setup Script</h2>
+  <p>
+    This script automates the setup of a <strong>Collabora Online</strong> container for integration with <strong>Nextcloud</strong>.  
+    It checks for the existing Docker network <code>produktiv</code>, collects your Nextcloud and Collabora FQDNs,  
+    and launches the official <code>collabora/code</code> image with the required configuration.
+  </p>
+
+  <h3>How to integrate Collabora into Nextcloud</h3>
+  <ol>
+    <li>Make sure your reverse proxy points the chosen Collabora domain (e.g., <code>collabora.example.com</code>) to port <code>9980</code>.</li>
+    <li>In Nextcloud, install the <strong>Collabora Online</strong> app from the App Store.</li>
+    <li>Go to <em>Settings → Administration → Collabora Online</em>.</li>
+    <li>Enter your Collabora server URL, for example:  
+      <code>https://collabora.example.com</code></li>
+    <li>Save the settings and start editing documents directly in Nextcloud.</li>
+  </ol>
+</section>
