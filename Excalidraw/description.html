@@ -1,0 +1,39 @@
+<h1>Excalidraw Installation Script</h1>
+<p>
+  The provided <code>install_excalidraw.sh</code> script sets up a
+  self-hosted <strong>Excalidraw</strong> environment inside an existing
+  Docker network named <code>produktiv</code>.
+</p>
+<ul>
+  <li>Checks if <strong>whiptail</strong> is installed (and installs it if missing).</li>
+  <li>Verifies if the Docker network <code>produktiv</code> exists.</li>
+  <li>Removes old containers named <code>excalidraw</code>,
+      <code>excalidraw-room</code>, and <code>excalidraw-storage</code>.</li>
+  <li>Starts three containers inside the <code>produktiv</code> network:
+    <ul>
+      <li><strong>excalidraw</strong> – the frontend web application</li>
+      <li><strong>excalidraw-room</strong> – the realtime collaboration server</li>
+      <li><strong>excalidraw-storage</strong> – a community backend for scene sharing</li>
+    </ul>
+  </li>
+  <li>Uses <strong>whiptail</strong> dialogs to show error or success messages.</li>
+</ul>
+
+<h2>About Excalidraw</h2>
+<p>
+  <strong>Excalidraw</strong> is an open-source virtual whiteboard tool
+  for sketching diagrams, UI mockups, and notes with a hand-drawn style.
+  It is often described as a lightweight and privacy-friendly alternative
+  to online whiteboards like Miro.
+</p>
+<ul>
+  <li>Supports drawing shapes, connectors, text, and freehand sketches.</li>
+  <li>Files can be exported as <code>.excalidraw</code>, PNG, SVG, or PDF.</li>
+  <li>Realtime collaboration is possible when the <code>excalidraw-room</code>
+      server is running.</li>
+  <li>Optional <code>excalidraw-storage</code> backend allows users to share
+      scenes with generated links instead of relying on the public service
+      <em>json.excalidraw.com</em>.</li>
+  <li>Runs entirely in Docker, accessible through a reverse proxy like
+      <strong>Nginx Proxy Manager</strong> or <strong>Traefik</strong>.</li>
+</ul>
