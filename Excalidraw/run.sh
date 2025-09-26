@@ -5,14 +5,14 @@
 #|  __| \ \/ / __/ _` | | |/ _` | '__/ _` \ \ /\ / /
 #| |____ >  < (_| (_| | | | (_| | | | (_| |\ V  V / 
 #|______/_/\_\___\__,_|_|_|\__,_|_|  \__,_| \_/\_/  
-# Raphael Jäger                                                   
+# Raphael Jäger
 
 set -e
 
-# Container names
+# Container names / hostnames
 FRONTEND="excalidraw"
-ROOM="excalidraw-room"
-STORAGE="excalidraw-storage"
+ROOM="excalidrawroom"
+STORAGE="excalidrawstorage"
 
 # Images
 IMG_FRONTEND="excalidraw/excalidraw:latest"
@@ -37,41 +37,37 @@ if ! docker network ls | grep -q "$NETWORK"; then
   exit 1
 fi
 
-# Remove old containers if they exist
-for c in $FRONTEND $ROOM $STORAGE; do
-  if docker ps -a --format '{{.Names}}' | grep -q "^$c\$"; then
-    docker rm -f "$c"
-  fi
-done
-
-# Start frontend
+# Start frontend (hostname set)
 docker run -d \
-  --name $FRONTEND \
-  --network $NETWORK \
-  -e VITE_APP_WS_SERVER_URL=http://$ROOM:3002 \
-  -e VITE_APP_STORAGE_BACKEND=http \
-  -e VITE_APP_HTTP_STORAGE_BACKEND_URL=http://$STORAGE:8080/api/v2 \
-  -e VITE_APP_BACKEND_V2_GET_URL=http://$STORAGE:8080/api/v2/scenes/ \
-  -e VITE_APP_BACKEND_V2_POST_URL=http://$STORAGE:8080/api/v2/scenes/ \
-  -e VITE_APP_DISABLE_TRACKING=true \
-  $IMG_FRONTEND
+  --name "$FRONTEND" \
+  --hostname "$FRONTEND" \
+  --network "$NETWORK" \
+  -e VITE_APP_WS_SERVER_URL="http://$ROOM:3002" \
+  -e VITE_APP_STORAGE_BACKEND="http" \
+  -e VITE_APP_HTTP_STORAGE_BACKEND_URL="http://$STORAGE:8080/api/v2" \
+  -e VITE_APP_BACKEND_V2_GET_URL="http://$STORAGE:8080/api/v2/scenes/" \
+  -e VITE_APP_BACKEND_V2_POST_URL="http://$STORAGE:8080/api/v2/scenes/" \
+  -e VITE_APP_DISABLE_TRACKING="true" \
+  "$IMG_FRONTEND"
 
-# Start room server
+# Start room server (hostname set)
 docker run -d \
-  --name $ROOM \
-  --network $NETWORK \
-  -e PORT=3002 \
-  $IMG_ROOM
+  --name "$ROOM" \
+  --hostname "$ROOM" \
+  --network "$NETWORK" \
+  -e PORT="3002" \
+  "$IMG_ROOM"
 
-# Start storage backend
+# Start storage backend (hostname set)
 docker run -d \
-  --name $STORAGE \
-  --network $NETWORK \
-  -e PORT=8080 \
-  -e STORAGE_URI=sqlite://data/storage.db \
-  -e GLOBAL_PREFIX=/api/v2 \
+  --name "$STORAGE" \
+  --hostname "$STORAGE" \
+  --network "$NETWORK" \
+  -e PORT="8080" \
+  -e STORAGE_URI="sqlite://data/storage.db" \
+  -e GLOBAL_PREFIX="/api/v2" \
   -v excalidraw_storage_data:/data \
-  $IMG_STORAGE
+  "$IMG_STORAGE"
 
 # Success message
 whiptail --title "Installation Complete" --msgbox \
