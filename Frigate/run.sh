@@ -132,4 +132,4 @@ docker run -d \
   -e FRIGATE_RTSP_PASSWORD="$RTSP_PASSWORD" \
   "$IMAGE"
 
-whiptail --msgbox "Frigate container installed successfully. Port 8971 Username Admin Password in Docker Logs." 8 45
+whiptail --msgbox "Frigate container installed successfully. Port 8971 Login in Docker Logs." 8 45
