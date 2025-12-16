@@ -125,10 +125,11 @@ docker run -d \
   -v "${CONFIG_VOLUME}:/config" \
   $MEDIA_MOUNT \
   --tmpfs /tmp/cache:size=1000000000 \
+  -p 8971:8971 \
   -p 8554:8554 \
   -p 8555:8555/tcp \
   -p 8555:8555/udp \
   -e FRIGATE_RTSP_PASSWORD="$RTSP_PASSWORD" \
   "$IMAGE"
 
-whiptail --msgbox "Frigate container installed successfully." 8 45
+whiptail --msgbox "Frigate container installed successfully. Port 8971 Username Admin Password in Docker Logs." 8 45
