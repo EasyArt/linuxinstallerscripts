@@ -1,0 +1,47 @@
+<h1>Frigate Installation Script</h1>
+<p>
+  The provided <code>install_frigate.sh</code> script installs and configures
+  <strong>Frigate NVR</strong> as a Docker container inside an existing
+  Docker network named <code>produktiv</code>.
+</p>
+
+<ul>
+  <li>Installs <strong>whiptail</strong> for interactive terminal dialogs.</li>
+  <li>Checks if the Docker network <code>produktiv</code> exists and aborts if missing.</li>
+  <li>Prompts the user to securely enter the <code>FRIGATE_RTSP_PASSWORD</code>.</li>
+  <li>Asks whether the system is a <strong>Raspberry Pi 4B</strong> to enable hardware acceleration.</li>
+  <li>Allows selection of a <strong>Google Coral</strong> accelerator:
+    <ul>
+      <li><strong>none</strong> – CPU-based detection</li>
+      <li><strong>USB</strong> – Coral USB Accelerator</li>
+      <li><strong>PCIe</strong> – Coral PCIe Accelerator</li>
+    </ul>
+  </li>
+  <li>Lets the user choose how Frigate media is stored:
+    <ul>
+      <li><strong>Docker volume</strong> (<code>frigate_media</code>)</li>
+      <li><strong>Bind mount</strong> to a host directory</li>
+    </ul>
+  </li>
+  <li>Creates required Docker volumes for configuration and media storage.</li>
+  <li>Automatically removes an existing <code>frigate</code> container before redeployment.</li>
+  <li>Starts the Frigate container with appropriate device mappings, ports, and restart policy.</li>
+</ul>
+
+<h2>About Frigate</h2>
+<p>
+  <strong>Frigate</strong> is an open-source Network Video Recorder (NVR)
+  designed for real-time object detection using <strong>FFmpeg</strong>
+  and <strong>TensorFlow</strong>.
+  It integrates seamlessly with <strong>Home Assistant</strong>
+  and is optimized for Docker-based deployments.
+</p>
+
+<ul>
+  <li>Supports real-time object detection on IP cameras via RTSP.</li>
+  <li>Hardware acceleration via VAAPI, Raspberry Pi, and Google Coral.</li>
+  <li>Efficient motion and object-based recording.</li>
+  <li>Web UI for live view, recordings, and snapshots.</li>
+  <li>Runs fully containerized and works well behind reverse proxies.</li>
+  <li>Ideal for self-hosted, privacy-focused surveillance setups.</li>
+</ul>
