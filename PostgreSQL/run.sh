@@ -57,7 +57,7 @@ INSTALL_PGADMIN=false
 
 PG_DB_USER="pgadmin"
 PG_DB_PASS=""
-PGADMIN_EMAIL="admin@local"
+PGADMIN_EMAIL="pgadmin@shquick.de"
 PGADMIN_PASS=""
 
 # -----------------------------
@@ -136,4 +136,4 @@ fi
 SUMMARY+="Note:
 pgAdmin runs internally on port 80 and must be configured in your reverse proxy."
 
-whiptail --title "Access Information" --msgbox "$SUMMARY" 20 70
+whiptail --title "Access Information" --scrolltext --msgbox "$SUMMARY" 20 70
