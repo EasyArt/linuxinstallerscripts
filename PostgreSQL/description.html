@@ -1,0 +1,21 @@
+<h1>PostgreSQL & pgAdmin Installation Script</h1>
+
+<p>
+    This interactive shell script installs <strong>PostgreSQL (PGDB)</strong> and/or
+    <strong>pgAdmin</strong> on a Docker-based Linux system.
+    The user can select which components to install via a checklist menu.
+</p>
+
+<h2>How It Works</h2>
+<ol>
+    <li>Installs <code>whiptail</code> if it is missing.</li>
+    <li>Checks whether the Docker network <code>produktiv</code> exists and aborts if it does not.</li>
+    <li>Deploys the selected Docker containers with automatic restart enabled.</li>
+    <li>Generates secure random passwords for PostgreSQL and pgAdmin.</li>
+    <li>Displays all access credentials in a final summary window.</li>
+</ol>
+
+<p>
+    PostgreSQL is exposed on port <code>5432</code>.  
+    pgAdmin runs internally on port <code>80</code> and must be accessed via a reverse proxy.
+</p>
