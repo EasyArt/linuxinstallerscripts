@@ -6,74 +6,101 @@
 # _| |_| | | | | | | | | | | | (__| | | |
 #|_____|_| |_| |_|_| |_| |_|_|\___|_| |_|
 # Raphael Jäger
-                                                                               
+
 set -e
 
-# ---------- FUNCTIONS ----------
+# ================= FUNCTIONS =================
+clear_stdin() {
+  while read -r -t 0; do read -r; done
+}
+
 error_exit() {
-  whiptail --title "Immich Installer" --msgbox "$1" 10 60
+  whiptail --title "Immich Installer" --msgbox "$1" 14 70
   exit 1
 }
 
-# ---------- CHECK ROOT ----------
+rand_pw() {
+  tr -dc A-Za-z0-9 </dev/urandom | head -c 24
+}
+
+# ================= CHECKS =================
 if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root."
+  echo "Run as root."
   exit 1
 fi
 
-# ---------- INSTALL WHIPTAIL ----------
-if ! command -v whiptail &>/dev/null; then
-  apt update && apt install -y whiptail || error_exit "Failed to install whiptail."
-fi
+command -v whiptail >/dev/null || error_exit "whiptail is required."
+command -v docker >/dev/null || error_exit "Docker is required."
+docker info >/dev/null || error_exit "Docker daemon not running."
 
-# ---------- CHECK DOCKER ----------
-if ! command -v docker &>/dev/null; then
-  error_exit "Docker is not installed.\n\nPlease install Docker manually or using shQuick."
-fi
+docker network inspect produktiv >/dev/null || error_exit \
+"Docker network 'produktiv' does not exist."
 
-if ! docker info &>/dev/null; then
-  error_exit "Docker daemon is not running."
-fi
+# ================= REDIS (EXTERNAL ONLY) =================
+if whiptail --yesno "Use an existing Redis instance?" 10 60; then
+  USE_REDIS="yes"
 
-# ---------- CHECK NETWORK ----------
-if ! docker network inspect produktiv &>/dev/null; then
-  error_exit "Docker network 'produktiv' does not exist.\n\nPlease create it manually or install Docker using shQuick."
-fi
-
-# ---------- DATABASE ----------
-DB_HOST=$(whiptail --inputbox "PostgreSQL hostname:" 10 60 database 3>&1 1>&2 2>&3)
-DB_PORT=$(whiptail --inputbox "PostgreSQL port:" 10 60 5432 3>&1 1>&2 2>&3)
-DB_NAME=$(whiptail --inputbox "PostgreSQL database name:" 10 60 immich 3>&1 1>&2 2>&3)
-DB_USER=$(whiptail --inputbox "PostgreSQL username:" 10 60 immich 3>&1 1>&2 2>&3)
-DB_PASS=$(whiptail --passwordbox "PostgreSQL password:" 10 60 3>&1 1>&2 2>&3)
-
-# ---------- REDIS ----------
-USE_REDIS=$(whiptail --yesno "Do you want to use Redis?" 10 60 && echo "yes" || echo "no")
-
-if [ "$USE_REDIS" = "yes" ]; then
   REDIS_HOST=$(whiptail --inputbox "Redis hostname:" 10 60 redis 3>&1 1>&2 2>&3)
+  clear_stdin
+
   REDIS_PORT=$(whiptail --inputbox "Redis port:" 10 60 6379 3>&1 1>&2 2>&3)
+  clear_stdin
+else
+  USE_REDIS="no"
 fi
 
-# ---------- STORAGE ----------
-STORAGE_TYPE=$(whiptail --menu "Select storage type:" 12 60 2 \
-  "volume" "Docker volume" \
-  "bind" "Bind mount" 3>&1 1>&2 2>&3)
+# ================= STORAGE =================
+STORAGE_TYPE=$(whiptail --menu "Select media storage type:" 12 70 2 \
+  volume "Docker volume" \
+  bind   "Bind mount" \
+  3>&1 1>&2 2>&3)
+clear_stdin
 
 if [ "$STORAGE_TYPE" = "volume" ]; then
-  VOLUME_NAME="immich_library"
-  docker volume inspect "$VOLUME_NAME" &>/dev/null || docker volume create "$VOLUME_NAME" >/dev/null
-  VOLUME_DEF="-v ${VOLUME_NAME}:/usr/src/app/upload"
+  UPLOAD_LOCATION="immich_upload"
+  docker volume inspect "$UPLOAD_LOCATION" >/dev/null || docker volume create "$UPLOAD_LOCATION" >/dev/null
+  UPLOAD_VOL="-v ${UPLOAD_LOCATION}:/data"
 else
-  HOST_PATH=$(whiptail --inputbox "Enter host path for bind mount:" 10 60 /srv/immich/library 3>&1 1>&2 2>&3)
+  HOST_PATH=$(whiptail --inputbox "Host path for media:" 10 70 /srv/immich/upload 3>&1 1>&2 2>&3)
+  clear_stdin
   mkdir -p "$HOST_PATH"
-  VOLUME_DEF="-v ${HOST_PATH}:/usr/src/app/upload"
+  UPLOAD_LOCATION="$HOST_PATH"
+  UPLOAD_VOL="-v ${UPLOAD_LOCATION}:/data"
 fi
 
-# ---------- ENV VARS ----------
+# ================= DATABASE =================
+DB_NAME="immich"
+DB_USER="immich"
+DB_PASS="$(rand_pw)"
+
+docker volume inspect immich_pgdata >/dev/null || docker volume create immich_pgdata >/dev/null
+
+# ================= CLEANUP =================
+docker rm -f \
+  immich_server \
+  immich_machine_learning \
+  immich_postgres \
+  >/dev/null 2>&1 || true
+
+# ================= POSTGRES =================
+docker run -d \
+  --restart=always \
+  --name immich_postgres \
+  --hostname immich_postgres \
+  --network produktiv \
+  -e POSTGRES_DB="$DB_NAME" \
+  -e POSTGRES_USER="$DB_USER" \
+  -e POSTGRES_PASSWORD="$DB_PASS" \
+  -e POSTGRES_INITDB_ARGS="--data-checksums" \
+  -v immich_pgdata:/var/lib/postgresql/data \
+  --shm-size=128m \
+  ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0 \
+  || error_exit "PostgreSQL failed to start."
+
+# ================= ENV =================
 ENV_VARS=(
-  -e DB_HOSTNAME="$DB_HOST"
-  -e DB_PORT="$DB_PORT"
+  -e DB_HOSTNAME=immich_postgres
+  -e DB_PORT=5432
   -e DB_DATABASE_NAME="$DB_NAME"
   -e DB_USERNAME="$DB_USER"
   -e DB_PASSWORD="$DB_PASS"
@@ -86,38 +113,51 @@ if [ "$USE_REDIS" = "yes" ]; then
   )
 fi
 
-# ---------- REMOVE OLD CONTAINERS ----------
-docker rm -f immich immich-backend &>/dev/null || true
-
-# ---------- CREATE CONTAINERS ----------
+# ================= IMMICH SERVER =================
 docker run -d \
-  --name immich \
-  --hostname immich \
+  --restart=always \
+  --name immich_server \
+  --hostname immich_server \
   --network produktiv \
   "${ENV_VARS[@]}" \
-  $VOLUME_DEF \
+  $UPLOAD_VOL \
+  -v /etc/localtime:/etc/localtime:ro \
   ghcr.io/immich-app/immich-server:release \
-  || error_exit "Failed to start Immich server."
+  || error_exit "Immich server failed."
+
+# ================= IMMICH MACHINE LEARNING =================
+docker volume inspect immich_model_cache >/dev/null || docker volume create immich_model_cache >/dev/null
 
 docker run -d \
-  --name immich-backend \
-  --hostname immich-backend \
+  --restart=always \
+  --name immich_machine_learning \
+  --hostname immich_machine_learning \
   --network produktiv \
   "${ENV_VARS[@]}" \
-  $VOLUME_DEF \
-  ghcr.io/immich-app/immich-server:release \
-  start.sh microservices \
-  || error_exit "Failed to start Immich backend."
+  -v immich_model_cache:/cache \
+  ghcr.io/immich-app/immich-machine-learning:release \
+  || error_exit "Immich ML failed."
 
-# ---------- SUCCESS ----------
-whiptail --title "Immich Installer" --msgbox \
-"Installation successful!
+# ================= DONE =================
+whiptail --title "Immich installed" --msgbox \
+"SUCCESS
 
-Immich is running internally via Docker.
+Immich:
+  Host: immich_server
+  Port: 2283 (internal)
 
-Server:
-  Hostname: immich
-  Port: 3001
+PostgreSQL:
+  Host: immich_postgres
+  Database: $DB_NAME
+  Username: $DB_USER
+  Password: $DB_PASS
 
-Use a reverse proxy to expose it externally." \
-12 60
+Redis:
+  Used: $USE_REDIS
+  Host: ${REDIS_HOST:-n/a}
+  Port: ${REDIS_PORT:-n/a}
+
+Docker network:
+  produktiv" \
+20 75
+
