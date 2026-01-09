@@ -1,0 +1,39 @@
+<section aria-labelledby="immich-installer-title">
+  <h1 id="immich-installer-title">Immich Docker Installer Script</h1>
+
+  <p>
+    This script installs a complete Immich setup using plain Docker commands, designed
+    to run behind a reverse proxy without exposing ports. It creates all required
+    containers and attaches them to an existing Docker network.
+  </p>
+
+  <h2>Important Design Choice</h2>
+  <p>
+    The script always creates a <strong>dedicated PostgreSQL database exclusively for Immich</strong>.
+    Immich requires its own customized PostgreSQL image with built-in vector extensions
+    (pgvector / vectorchord). Standard PostgreSQL images are not compatible and will
+    cause startup failures.
+  </p>
+
+  <h2>Key Features</h2>
+  <ul>
+    <li><strong>Dedicated PostgreSQL container:</strong> uses the official Immich PostgreSQL image.</li>
+    <li><strong>No shared database:</strong> existing PostgreSQL instances are intentionally not used.</li>
+    <li><strong>Optional Redis:</strong> connects to an existing Redis instance if configured.</li>
+    <li><strong>Flexible storage:</strong> Docker volume or bind mount for media files.</li>
+    <li><strong>Reverse proxy ready:</strong> no ports are exposed.</li>
+    <li><strong>Automatic restarts:</strong> all containers use <code>restart=always</code>.</li>
+  </ul>
+
+  <h2>Typical Setup</h2>
+  <ol>
+    <li>Ensure a Docker network (e.g. <code>produktiv</code>) exists.</li>
+    <li>Run the script as root and complete the interactive setup.</li>
+    <li>Expose Immich through your reverse proxy.</li>
+  </ol>
+
+  <p>
+    <em>Note:</em> Using a separate PostgreSQL container is mandatory for Immich and
+    ensures compatibility with current and future releases.
+  </p>
+</section>
