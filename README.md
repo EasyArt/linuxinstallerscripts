@@ -29,7 +29,7 @@ Welcome to **LinuxInstallerScripts**, a collection of Linux shell scripts design
 ### 🌐 Run Directly from the Website
 
 You can run any script directly from our website without downloading it:
-[![Website](https://img.shields.io/badge/Website-Visit-blue)](https://shquick.rj-sig.de)
+[![Website](https://img.shields.io/badge/Website-Visit-blue)](https://shquick.de)
 
 ---
 
