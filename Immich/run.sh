@@ -78,7 +78,7 @@ docker volume inspect immich_pgdata >/dev/null || docker volume create immich_pg
 # ================= CLEANUP =================
 docker rm -f \
   immich_server \
-  immich_machine_learning \
+  immich-machine-learning \
   immich_postgres \
   >/dev/null 2>&1 || true
 
@@ -130,8 +130,8 @@ docker volume inspect immich_model_cache >/dev/null || docker volume create immi
 
 docker run -d \
   --restart=always \
-  --name immich_machine_learning \
-  --hostname immich_machine_learning \
+  --name immich-machine-learning \
+  --hostname immich-machine-learning \
   --network produktiv \
   "${ENV_VARS[@]}" \
   -v immich_model_cache:/cache \
