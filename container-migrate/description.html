@@ -1,0 +1,35 @@
+<h1>Docker Container Migration Script</h1>
+<p>This advanced interactive shell script allows you to migrate Docker containers from one host to another over SSH. It provides a user-friendly interface using <code>whiptail</code> and includes progress visualization for each migration step. The script handles images, networks, volumes, bind mounts, and container configurations automatically.</p>
+
+<h2>Step-by-Step Process</h2>
+<ol>
+    <li>Check for required dependencies (<code>whiptail</code>, <code>sshpass</code>, <code>jq</code>, <code>pv</code>) and install them if missing.</li>
+    <li>Prompt the user for target server connection details, including IP address, SSH port, username, and password.</li>
+    <li>Verify that Docker is installed on both the source and target systems.</li>
+    <li>Display a checklist of all running Docker containers on the source system for selection.</li>
+    <li>For each selected container, retrieve its configuration using <code>docker inspect</code>.</li>
+    <li>Pull the required Docker image on the target system.</li>
+    <li>Recreate all Docker networks used by the container on the target host if they do not already exist.</li>
+    <li>Transfer all Docker volumes:
+        <ul>
+            <li>Automatically create missing volumes on the target.</li>
+            <li>Stream data securely using <code>tar</code> over SSH with progress tracking via <code>pv</code>.</li>
+        </ul>
+    </li>
+    <li>Transfer bind-mounted directories by copying their contents to the target system, preserving structure.</li>
+    <li>Reconstruct container runtime configuration, including:
+        <ul>
+            <li>Port bindings</li>
+            <li>Environment variables</li>
+            <li>Restart policies</li>
+            <li>User settings</li>
+            <li>Startup command</li>
+        </ul>
+    </li>
+    <li>Start the container on the target system using the reconstructed configuration.</li>
+    <li>Display a real-time progress bar for each container migration using <code>whiptail</code>.</li>
+    <li>Repeat the process for all selected containers.</li>
+    <li>Show a final success message once all migrations are completed.</li>
+</ol>
+
+<p>After completion, the selected Docker containers will be fully migrated and running on the target system with their data and configurations preserved. This script is especially useful for server migrations, backups, or moving workloads between hosts with minimal manual intervention.</p>
