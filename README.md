@@ -33,6 +33,12 @@ You can run any script directly from our website without downloading it:
 
 ---
 
+## Nexterm
+### Add Source to Nexterm Sources
+Insert https://raw.githubusercontent.com/EasyArt/linuxinstallerscripts/refs/heads/main/
+
+---
+
 ### Clone the Repository
 Clone the repository and run the scripts manually on your Linux server:
 
