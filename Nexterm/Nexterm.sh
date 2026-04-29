@@ -39,4 +39,4 @@ docker run -d \
 HOST_IP=$(hostname -I | awk '{print $1}')
 
 # --- Done Message ---
-whiptail --title "Installation Complete" --msgbox "Nexterm has been successfully installed!\n\nAccess it at:\nhttp://$HOST_IP:6989" 12 60
+whiptail --title "Installation Complete" --msgbox "Nexterm has been successfully installed!\n\nAccess it at:\nhttp://$HOST_IP:6989\n\nNexterm is Currently in Developement stat and using Developement Docker Tag!" 12 60
