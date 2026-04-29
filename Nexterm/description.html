@@ -1,0 +1,42 @@
+<section aria-labelledby="nexterm-title">
+  <h1 id="nexterm-title">Nexterm (All-in-One Container)</h1>
+  <p>
+    Nexterm is a modern, self-hosted web-based terminal and server management tool.
+    It provides secure browser access to your systems, allowing you to manage servers,
+    execute commands, and organize connections without installing a local SSH client.
+    This script deploys Nexterm as a Docker container with persistent storage and
+    automatic restart.
+  </p>
+
+  <h2>Key Features</h2>
+  <ul>
+    <li><strong>Web-based terminal:</strong> access your servers directly from any browser.</li>
+    <li><strong>Secure encryption:</strong> auto-generated encryption key for protecting stored data.</li>
+    <li><strong>Persistent storage:</strong> configuration and data are saved in a Docker volume.</li>
+    <li><strong>Auto-restart:</strong> container automatically starts after reboot or failure.</li>
+    <li><strong>Simple deployment:</strong> fully automated installation via a single script.</li>
+  </ul>
+
+  <h2>What the Script Does</h2>
+  <ol>
+    <li>Checks if the script is executed as root.</li>
+    <li>Ensures <code>whiptail</code> is installed for dialog messages.</li>
+    <li>Verifies that Docker is installed and available.</li>
+    <li>Checks if port <code>6989</code> is free.</li>
+    <li>Generates a secure random encryption key.</li>
+    <li>Deploys the Nexterm container using the <code>nexterm/aio:development</code> image.</li>
+    <li>Displays the access URL using the server's IP address.</li>
+  </ol>
+
+  <h2>Access</h2>
+  <p>
+    After installation, Nexterm will be available in your browser:
+    <br>
+    <code>http://&lt;your-server-ip&gt;:6989</code>
+  </p>
+
+  <p>
+    <em>Note:</em> This setup uses the <code>development</code> Docker image, which may be unstable.
+    For production environments, consider switching to a stable release once available.
+  </p>
+</section>
