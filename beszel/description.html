@@ -1,0 +1,33 @@
+<h1>Beszel Installation Script</h1>
+<p>
+  The provided script sets up a self-hosted
+  <strong>Beszel</strong> monitoring environment.
+</p>
+<ul>
+  <li>Checks if <strong>whiptail</strong> is installed and installs it if missing.</li>
+  <li>Verifies that the script is running with <strong>root</strong> privileges.</li>
+  <li>Checks whether <strong>Docker</strong> is installed.</li>
+  <li>Verifies that the Docker network <code>produktiv</code> exists.</li>
+  <li>Creates the Docker volumes <code>beszel_data</code> and <code>beszel_socket</code>.</li>
+  <li>Starts the <strong>beszel</strong> container using the image <code>henrygd/beszel:latest</code>.</li>
+  <li>Sets the <code>APP_URL</code> environment variable to the host IP on port <code>8090</code>.</li>
+  <li>Publishes <code>8090/tcp</code> so the Beszel web interface is reachable from outside the container.</li>
+  <li>Uses <strong>whiptail</strong> dialogs to show error and success messages.</li>
+  <li>Offers an optional installation of the <strong>Beszel Agent</strong>.</li>
+  <li>Starts the <strong>beszel-agent</strong> container using the image <code>henrygd/beszel-agent:latest</code>.</li>
+  <li>Uses placeholder environment variables <code>TOKEN=&lt;token&gt;</code> and <code>KEY=&lt;key&gt;</code> for manual replacement.</li>
+</ul>
+
+<h2>About Beszel</h2>
+<p>
+  <strong>Beszel</strong> is a lightweight, self-hosted monitoring solution
+  designed to track system and Docker host metrics. It provides a simple web
+  interface for viewing status information and can be extended with the
+  optional agent for monitoring additional hosts.
+</p>
+<ul>
+  <li>Runs as a Docker container and is easy to deploy on existing infrastructure.</li>
+  <li>Supports a central hub/agent setup for distributed monitoring.</li>
+  <li>Uses Docker volumes for persistent data storage.</li>
+  <li>Can be integrated into a Docker-based environment with a reverse proxy if desired.</li>
+</ul>
