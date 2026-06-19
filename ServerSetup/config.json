@@ -1,4 +1,15 @@
 {
+  "category": "System Administration",
+  "tags": [
+    "server-setup",
+    "cockpit",
+    "motd",
+    "login-banner",
+    "linux",
+    "server-management",
+    "system-configuration",
+    "administration"
+  ],
   "logoUrl": "",
   "lastModified": "30.07.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/debian-linux.png"
