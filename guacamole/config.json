@@ -1,4 +1,15 @@
 {
+  "category": "System Administration",
+  "tags": [
+    "guacamole",
+    "apache-guacamole",
+    "docker",
+    "remote-access",
+    "rdp",
+    "vnc",
+    "ssh",
+    "self-hosted"
+  ],
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/guacamole.png",
   "lastModified": "27.07.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
