@@ -1,4 +1,15 @@
 {
+  "category": "Security",
+  "tags": [
+    "frigate",
+    "docker",
+    "nvr",
+    "video-surveillance",
+    "security-camera",
+    "object-detection",
+    "cctv",
+    "self-hosted"
+  ]
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/frigate-light.png",
   "lastModified": "16.12.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
