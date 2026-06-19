@@ -1,4 +1,15 @@
 {
+  "category": "System Administration",
+  "tags": [
+    "zorin-os",
+    "branding",
+    "logo",
+    "customization",
+    "theme",
+    "linux",
+    "desktop",
+    "system-configuration"
+  ],
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/zorin-linux.png",
   "lastModified": "04.02.2026",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/zorin-linux.png"
