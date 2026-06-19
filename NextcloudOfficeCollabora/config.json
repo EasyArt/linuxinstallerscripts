@@ -1,4 +1,15 @@
 {
+  "category": "File Management",
+  "tags": [
+    "nextcloud-office",
+    "collabora",
+    "collabora-online",
+    "docker",
+    "nextcloud",
+    "office",
+    "document-editing",
+    "collaboration"
+  ]
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/collabora-online.png",
   "lastModified": "26.08.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
