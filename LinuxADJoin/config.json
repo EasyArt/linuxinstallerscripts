@@ -1,4 +1,15 @@
 {
+  "category": "Operating Systems",
+  "tags": [
+    "active-directory",
+    "ad-join",
+    "linux",
+    "domain",
+    "authentication",
+    "sssd",
+    "kerberos",
+    "ldap"
+  ]
   "logoUrl": "",
   "lastModified": "14.08.2024",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/debian-linux.png"
