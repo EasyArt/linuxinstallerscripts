@@ -1,4 +1,15 @@
 {
+  "category": "Communication",
+  "tags": [
+    "meshtastic",
+    "docker",
+    "mesh-network",
+    "lorawan",
+    "lora",
+    "radio",
+    "self-hosted",
+    "iot"
+  ]
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/meshtastic.png",
   "lastModified": "25.09.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
