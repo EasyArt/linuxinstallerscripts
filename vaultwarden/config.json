@@ -1,4 +1,15 @@
 {
+  "category": "Security",
+  "tags": [
+    "vaultwarden",
+    "bitwarden",
+    "docker",
+    "password-manager",
+    "security",
+    "credentials",
+    "self-hosted",
+    "authentication"
+  ],
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/vaultwarden.png",
   "lastModified": "20.07.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
