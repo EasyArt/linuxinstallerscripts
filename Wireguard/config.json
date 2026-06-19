@@ -1,4 +1,15 @@
 {
+  "category": "Networking",
+  "tags": [
+    "wireguard",
+    "vpn",
+    "docker",
+    "networking",
+    "remote-access",
+    "site-to-site",
+    "tunnel",
+    "self-hosted"
+  ],
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wireguard.png",
   "lastModified": "10.08.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/debian-linux.png"
