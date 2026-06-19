@@ -1,4 +1,15 @@
 {
+  "category": "System Administration",
+  "tags": [
+    "zorin-os",
+    "fixes",
+    "troubleshooting",
+    "repair",
+    "maintenance",
+    "linux",
+    "system-configuration",
+    "desktop"
+  ],
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/zorin-linux.png",
   "lastModified": "10.09.2024",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/zorin-linux.png"
