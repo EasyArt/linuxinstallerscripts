@@ -1,4 +1,13 @@
 {
+  "category": "Operating Systems",
+  "tags": [
+    "debian",
+    "os-upgrade",
+    "distribution-upgrade",
+    "linux",
+    "migration",
+    "system-maintenance"
+  ],
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/debian-linux.png",
   "lastModified": "30.07.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/debian-linux.png"
