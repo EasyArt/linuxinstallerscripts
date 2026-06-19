@@ -1,4 +1,15 @@
 {
+  "category": "Collaboration",
+  "tags": [
+    "excalidraw",
+    "docker",
+    "whiteboard",
+    "drawing",
+    "diagram",
+    "collaboration",
+    "self-hosted",
+    "container"
+  ]
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/excalidraw.png",
   "lastModified": "26.09.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
