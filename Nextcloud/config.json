@@ -1,4 +1,15 @@
 {
+  "category": "File Management",
+  "tags": [
+    "nextcloud",
+    "docker",
+    "file-sync",
+    "file-sharing",
+    "self-hosted",
+    "cloud",
+    "collaboration",
+    "storage"
+  ]
   "logoUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nextcloud.png",
   "lastModified": "30.07.2025",
   "dependencyIcon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png"
