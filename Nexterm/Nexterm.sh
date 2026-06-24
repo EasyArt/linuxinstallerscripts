@@ -56,7 +56,7 @@ docker run -d \
   --name nexterm \
   --restart always \
   -v nexterm:/app/data \
-  nexterm/aio:development >/dev/null 2>&1
+  nexterm/aio:latest >/dev/null 2>&1
 
 echo 90
 sleep 1
