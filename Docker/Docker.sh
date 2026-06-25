@@ -54,6 +54,20 @@ install_docker() {
 	clear
 }
 
+install_dockhand() {
+    echo "Installing Dockhand..."
+    docker run -d \
+    --name dockhand \
+    --hostname dockhand \
+    --network produktiv \
+    --restart unless-stopped \
+    -p 3001:3000 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v dockhand_data:/app/data \
+    fnsys/dockhand:latest
+    clear
+}
+
 install_portainer() {
     echo "Installing Portainer..."
     docker run -d --name portainer --network produktiv --restart always \
@@ -104,6 +118,17 @@ install_mysql() {
 	clear
 }
 
+install_hawseragent() {
+    docker run -d \
+    --name hawser \
+    --restart unless-stopped \
+    -p 2376:2376 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    ghcr.io/finsys/hawser:latest \
+    --port 2376
+	clear
+}
+
 install_portaineragent() {
 	docker run -d \
 	  -p 9001:9001 \
@@ -130,34 +155,28 @@ install_watchtower() {
 	clear
 }
 
-remove_docker_deb12() {
-    echo "Removing Old Deb12 Repo..."
-    FILE="/etc/apt/sources.list.d/docker.list"
-    if [[ -f "$FILE" ]]; then
-        sed -i '/bookworm/d' "$FILE"
-    fi
-}
-
 # Function for GUI multi-selection
 show_service_selection() {
     services=$(whiptail --checklist "Select the services to install:" 20 78 10 \
-    "1" "Remove old Deb12 Repository" off \
-    "2" "Install Portainer" off \
-    "3" "Install Portainer Agent" off \
-    "4" "Install NGINX Proxy Manager" off \
-    "5" "Install Zoraxy" off \
-    "6" "Install MySQL" off \
-    "7" "Install Watchtower" off 3>&1 1>&2 2>&3)
+    "1" "Install Dockhand" off \
+    "2" "Install Hawser Agent" off \
+    "3" "Install Portainer" off \
+    "4" "Install Portainer Agent" off \
+    "5" "Install NGINX Proxy Manager" off \
+    "6" "Install Zoraxy" off \
+    "7" "Install MySQL" off \
+    "8" "[⚠DEPRECATED⚠] Watchtower" off 3>&1 1>&2 2>&3)
 
     for service in $services; do
         case $service in
-	    "\"1\"") remove_docker_deb12 ;;
-            "\"2\"") install_portainer ;;
-            "\"3\"") install_portaineragent ;;
-            "\"4\"") install_nginx_rpm ;;
-	    "\"5\"") install_zoraxy ;;
-            "\"6\"") install_mysql ;;
-            "\"7\"") install_watchtower ;;
+            "\"1\"") install_dockhand ;;
+            "\"2\"") install_hawseragent ;;
+            "\"3\"") install_portainer ;;
+            "\"4\"") install_portaineragent ;;
+            "\"5\"") install_nginx_rpm ;;
+	        "\"6\"") install_zoraxy ;;
+            "\"7\"") install_mysql ;;
+            "\"8\"") install_watchtower ;;
         esac
     done
 
