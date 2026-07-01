@@ -1,4 +1,4 @@
-# 🚀 LinuxInstallerScripts
+<img width="1000" height="300" alt="shQuick_Banner" src="https://github.com/user-attachments/assets/033edd00-f386-4530-939d-bd359c240849" />
 
 Welcome to **LinuxInstallerScripts**, a collection of Linux shell scripts designed to streamline and simplify server setups. These scripts are perfect for anyone looking to automate common server tasks and configurations without hassle.
 
@@ -30,6 +30,7 @@ Welcome to **LinuxInstallerScripts**, a collection of Linux shell scripts design
 
 You can run any script directly from our website without downloading it:
 [![Website](https://img.shields.io/badge/Website-Visit-blue)](https://shquick.de)
+
 
 ---
 
