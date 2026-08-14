@@ -1,0 +1,48 @@
+<h1>Databasus Installation Script</h1>
+<p>
+  The provided script sets up a
+  self-hosted <strong>Databasus</strong> instance inside an existing
+  Docker network named <code>produktiv</code>.
+</p>
+<ul>
+  <li>Checks if the script is executed with <strong>root privileges</strong> or via <code>sudo</code>.</li>
+  <li>Creates a persistent Docker volume named <code>databasus</code> mounted to <code>/databasus-data</code>.</li>
+  <li>Downloads the latest <strong>Databasus</strong> Docker image.</li>
+  <li>Creates and starts a container named <code>databasus</code> inside the <code>produktiv</code> network.</li>
+  <li>Configures the container to automatically restart using <code>restart: always</code>.</li>
+  <li>Uses <code>databasus</code> as the container hostname.</li>
+  <li>Displays the required reverse proxy configuration after successful installation.</li>
+</ul>
+
+<h2>About Databasus</h2>
+<p>
+  <strong>Databasus</strong> is a self-hosted database backup management
+  solution designed to simplify the creation and management of database
+  backups. It runs as a Docker container and provides a web-based interface
+  for managing backup configurations.
+</p>
+<ul>
+  <li>Runs completely self-hosted using Docker.</li>
+  <li>Provides a web-based management interface.</li>
+  <li>Stores its application data persistently in the Docker volume
+      <code>databasus</code>.</li>
+  <li>Can be connected to databases running inside Docker networks or
+      reachable through the configured network infrastructure.</li>
+  <li>Uses the hostname <code>databasus</code> within the
+      <code>produktiv</code> Docker network.</li>
+  <li>The web interface is available internally on TCP port <code>4005</code>.</li>
+  <li>Can be published externally through a reverse proxy such as
+      <strong>Nginx Proxy Manager</strong> or <strong>Zoraxy</strong>.</li>
+</ul>
+
+<h2>Reverse Proxy</h2>
+<p>
+  After the installation has completed, a reverse proxy entry must be
+  created to access the Databasus web interface.
+</p>
+<ul>
+  <li><strong>Hostname:</strong> <code>databasus</code></li>
+  <li><strong>Port:</strong> <code>4005</code></li>
+  <li><strong>Protocol:</strong> <code>TCP</code></li>
+  <li><strong>Docker network:</strong> <code>produktiv</code></li>
+</ul>
