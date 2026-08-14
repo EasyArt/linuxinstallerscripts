@@ -20,9 +20,9 @@ get_fetch_tool() {
 # Function to modify /etc/profile (Beautiful login)
 modify_profile() {
     FETCH_TOOL=$(get_fetch_tool)
-    PROFILE_CONTENT="\nclear\nfiglet -f big \"\$(hostname)\"\necho \"==============================\"\necho \"Support: shquick@jaeger-raphael.de\"\necho \"==============================\"\n$FETCH_TOOL\n"
+    PROFILE_CONTENT="\nclear\nfiglet -f big \"\$(hostname)\"\necho \"==============================\"\necho \"Support: help@shquick.de\"\necho \"==============================\"\n$FETCH_TOOL\n"
 
-    if ! grep -q "Support: shquick@jaeger-raphael.de" /etc/profile; then
+    if ! grep -q "Support: help@shquick.de" /etc/profile; then
         echo -e "# The following entries were added by this script. Do not add again.\n$PROFILE_CONTENT" >> /etc/profile
     fi
     echo "Beautiful login applied!"
