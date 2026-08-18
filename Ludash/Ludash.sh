@@ -14,7 +14,7 @@ set -e
 # ============================================================
 
 CONTAINER_NAME="ludash"
-HOSTNAME="ludash"
+LUDASH_HOSTNAME="ludash"
 NETWORK="produktiv"
 IMAGE="ghcr.io/theduffman85/linux-update-dashboard:latest"
 CONTAINER_PORT="3001"
@@ -34,7 +34,14 @@ msg_error() {
     whiptail \
         --title "Error" \
         --msgbox "$1" \
-        12 75
+        11 75
+}
+
+msg_no_produktiv() {
+    whiptail \
+        --title "Error" \
+        --msgbox "$1" \
+        13 75
 }
 
 msg_success() {
@@ -42,6 +49,13 @@ msg_success() {
         --title "Installation" \
         --msgbox "$1" \
         12 75
+}
+
+msg_finalmsg() {
+    whiptail \
+        --title "Installation" \
+        --msgbox "$1" \
+        22 75
 }
 
 ask_yes_no() {
@@ -156,7 +170,7 @@ msg_success "Docker is installed and the Docker daemon is running."
 
 if ! docker network inspect "$NETWORK" >/dev/null 2>&1; then
 
-    msg_error \
+    msg_no_produktiv \
 "The Docker network '$NETWORK' does not exist.
 
 The network must be created manually before Ludash can be
@@ -295,7 +309,7 @@ Container:
   $CONTAINER_NAME
 
 Hostname:
-  $HOSTNAME
+  $LUDASH_HOSTNAME
 
 Docker network:
   $NETWORK
@@ -377,9 +391,8 @@ rm -f /tmp/ludash-docker-pull.log
 DOCKER_ARGS=(
     -d
     --name "$CONTAINER_NAME"
-    --hostname "$HOSTNAME"
+    --hostname "$LUDASH_HOSTNAME"
     --network "$NETWORK"
-    -p "${CONTAINER_PORT}:${CONTAINER_PORT}"
     -e "LUDASH_ENCRYPTION_KEY=${LUDASH_ENCRYPTION_KEY}"
     -e "LUDASH_BASE_URL=${LUDASH_BASE_URL}"
     -v "ludash_data:/data"
@@ -389,6 +402,10 @@ DOCKER_ARGS=(
 if [ -n "$LUDASH_TRUST_PROXY" ]; then
     DOCKER_ARGS+=(
         -e "LUDASH_TRUST_PROXY=${LUDASH_TRUST_PROXY}"
+    )
+else
+    DOCKER_ARGS+=(
+        -p "${CONTAINER_PORT}:${CONTAINER_PORT}"
     )
 fi
 
@@ -442,7 +459,7 @@ Container:
   $CONTAINER_NAME
 
 Hostname:
-  $HOSTNAME
+  $LUDASH_HOSTNAME
 
 Docker network:
   $NETWORK
@@ -463,7 +480,7 @@ Reverse proxy:
 Create a reverse proxy entry pointing to:
 
 Host:
-  $HOSTNAME
+  $LUDASH_HOSTNAME
 
 Port:
   $CONTAINER_PORT
@@ -481,25 +498,4 @@ Ludash is directly exposed on port $CONTAINER_PORT.
 "
 fi
 
-msg_success "$FINAL_MESSAGE"
-
-# ============================================================
-# Final container status
-# ============================================================
-
-CONTAINER_STATUS=$(docker ps \
-    --filter "name=^${CONTAINER_NAME}$" \
-    --format "Name: {{.Names}}
-Status: {{.Status}}
-Network: $NETWORK
-Port: $CONTAINER_PORT")
-
-whiptail \
-    --title "Ludash Container Status" \
-    --msgbox \
-"Installation completed.
-
-$CONTAINER_STATUS" \
-    12 70
-
-exit 0
+msg_finalmsg "$FINAL_MESSAGE"
