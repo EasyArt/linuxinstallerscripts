@@ -123,33 +123,13 @@ The Ludash installer can now continue."
 # ============================================================
 
 if ! command -v docker >/dev/null 2>&1; then
-
-    if ask_yes_no \
-        "Docker Required" \
-        "Docker is not installed.
+    msg_error \
+"Docker is not installed.
 
 Docker is required to install Ludash.
 
-Docker can be installed using the installation script available
-at shQuick.de.
-
-Would you like to open the installation instructions?"; then
-
-        msg_info \
-"Docker is not installed.
-
 Please install Docker using the installation script from
 shQuick.de and run this Ludash installer again."
-
-    else
-        msg_error \
-"Docker is not installed.
-
-Please install Docker before running this installer again.
-
-You can use the Docker installation script available at
-shQuick.de."
-    fi
 
     exit 1
 fi
